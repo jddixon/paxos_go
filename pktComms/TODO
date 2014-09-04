@@ -1,0 +1,4 @@
+paxos_go/pktComms/TODO
+
+2014-09-04
+    * fix 'flag redefined' error in gocheck

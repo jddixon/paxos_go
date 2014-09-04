@@ -1,4 +1,4 @@
-package paxos_go
+package pktComms
 
 import (
 	. "gopkg.in/check.v1"
