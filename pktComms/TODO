@@ -1,4 +1,7 @@
 paxos_go/pktComms/TODO
 
+2014-09-05
+    * revise to use tcpIP rather than UDP for comms
+
 2014-09-04
-    * fix 'flag redefined' error in gocheck
+    * fix 'flag redefined' error in gocheck                             * DONE

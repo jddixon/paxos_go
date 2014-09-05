@@ -7,7 +7,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	xr "github.com/jddixon/rnglib_go"
-	. "launchpad.net/gocheck"
+	. "gopkg.in/check.v1"
 )
 
 var _ = proto.Marshal
