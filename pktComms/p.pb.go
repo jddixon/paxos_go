@@ -81,9 +81,9 @@ func (m *AppMsg) GetHash() []byte {
 type Hello struct {
 	MsgN             *uint64 `protobuf:"varint,1,opt" json:"MsgN,omitempty"`
 	ID               []byte  `protobuf:"bytes,2,opt" json:"ID,omitempty"`
-	SigPubKey        []byte  `protobuf:"bytes,3,opt,name=sigPubKey" json:"sigPubKey,omitempty"`
-	CommsPubKey      []byte  `protobuf:"bytes,4,opt,name=commsPubKey" json:"commsPubKey,omitempty"`
-	TcpAddr          *string `protobuf:"bytes,5,opt,name=tcpAddr" json:"tcpAddr,omitempty"`
+	SigPubKey        []byte  `protobuf:"bytes,3,opt" json:"SigPubKey,omitempty"`
+	CommsPubKey      []byte  `protobuf:"bytes,4,opt" json:"CommsPubKey,omitempty"`
+	TCPAddr          *string `protobuf:"bytes,5,opt" json:"TCPAddr,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
 	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -121,9 +121,9 @@ func (m *Hello) GetCommsPubKey() []byte {
 	return nil
 }
 
-func (m *Hello) GetTcpAddr() string {
-	if m != nil && m.TcpAddr != nil {
-		return *m.TcpAddr
+func (m *Hello) GetTCPAddr() string {
+	if m != nil && m.TCPAddr != nil {
+		return *m.TCPAddr
 	}
 	return ""
 }

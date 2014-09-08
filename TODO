@@ -1,4 +1,9 @@
 paxos_go/TODO
 
-2014-08-31
-    *
+2014-09-07
+    * edit gocheck_test.go, recently stolen from xlReg_u, to a form
+        more appropriate for testing paxos_go
+
+    * review makeACluster -- it would seem to generate nodes where
+        we have no knowledge of their private keys, and so which are
+        of limited value

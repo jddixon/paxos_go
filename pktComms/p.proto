@@ -21,9 +21,9 @@ message AppMsg {
 message Hello {
     optional uint64 MsgN		= 1;
     optional bytes  ID			= 2;
-    optional bytes  sigPubKey	= 3;
-    optional bytes  commsPubKey	= 4;
-    optional string tcpAddr		= 5;
+    optional bytes  SigPubKey	= 3;
+    optional bytes  CommsPubKey	= 4;
+    optional string TCPAddr		= 5;
     optional bytes  Salt		= 12;
     optional bytes  Hash		= 13;
 }
