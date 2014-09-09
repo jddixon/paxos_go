@@ -49,7 +49,7 @@ func (s *XLSuite) makeANodeID(c *C, rng *xr.PRNG) (nodeID *xi.NodeID) {
 	return
 }
 
-// Returns a 2048-bit RSA key.
+// Returns a 2048-bit RSA private key.
 func (s *XLSuite) makeAnRSAKey(c *C) (key *rsa.PrivateKey) {
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	c.Assert(err, IsNil)
