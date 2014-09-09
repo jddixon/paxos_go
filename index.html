@@ -12,10 +12,71 @@
 <h1>paxos_go</h1>
 
 <p>A library enabling the achievement of consensus within a cluster of
-XLattice nodes (independent computational units with unique cryptographic identities).  Intra-cluster communications pass over a full mesh of inter-node
+independent computational units with unique cryptographic
+identities.  Intra-cluster communications pass over a full mesh of inter-node
 connections.  Clients can query the cluster or propose new commands which
 will pass through the consensus process and upon agreement will become part
 of the cluster&rsquo;s state.</p>
+
+<h2>Clusters</h2>
+
+<p>As the term is used here, a <strong>cluster</strong> is a group of coooperating processors,
+<strong>servers</strong>.  The servers are driven by commands issued by <strong>clients</strong>; the
+clients are not themselves part of the cluster and generally do not communicate
+with one another.  Clients issue <strong>commands</strong>.  Commands are not issued in
+any particular order and may take an arbitrary time to deliver.  While a
+command may never be corrupt, it may be lost or delivered more than once.</p>
+
+<h2>Consensus in the Back End</h2>
+
+<p>Each server has at lease one attached <strong>state machine</strong> whose state is
+determined by
+the sequence of commands passed to it.  Servers cooperate to achieve
+<strong>consensus</strong>, which means that each server eventually delivers the same
+sequence of commands to its state machine.  (More formally, at any given
+time, if <em>a</em> is the sequence of commands delivered to state machine <em>A</em>
+and <em>b</em> is the sequence of commands delivered to state machine <em>B</em>, then
+we are guaranteed that either <em>a</em> is a prefix of <em>b</em> or <em>b</em> is a prefix of
+<em>a</em> or <em>a</em> is identical to <em>b</em>.)</p>
+
+<p>A state machine consists of a number of variables.  In paxos_go, one of
+these is <em>state</em>, a 64-bit unsigned value.  Each execution of a command
+causes the state to be incremented.  Upon successful execution of a command,
+the cluster always returns at least the state to the client which requested
+execution of the command.</p>
+
+<h2>Applications</h2>
+
+<p>A set of state machines as described above is referred to here as an
+<strong>application</strong>. An application runs on a single cluster.  Each server in
+the cluster has a state machine specific to the application.  Each such
+application uses a variant of the Paxos protocol to achieve consensus.</p>
+
+<h2>Application Front End</h2>
+
+<p>In paxos_go, only back-end clients may originate commands which alter the
+state of an application&rsquo;s state machine.  Commands to a server contain
+enough information to identify the back-end client and the application.
+Such commands also contain a hash which can be used to verify the integrity
+of the command.  If verification fails, the message (the command) is
+discarded.</p>
+
+<p>External clients to the application generally communicate with servers
+over a different set of listening ports.  External clients need not share
+the same model of the data as the consensus servers, except that an
+external client will always be able to obtain the 64-bit unsigned value
+identifying the current state of the state machine.</p>
+
+<p>As an example, consider a set of consensus servers which cooperate to appear
+to the
+outside world as a group of name servers.  Each name server is responsible
+for a set of zone files and will answer standard DNS queries about each of
+its zones.</p>
+
+<p>The back-end cluster can store each such zone file by its content key.<br />
+To the cluster, the state machine maps zone names (the fully qualified
+domain name of a zone file) to a hash.  The validity of the hash is
+confirmed by hashing the file.</p>
 
 <h2>On-line Documentation</h2>
 
