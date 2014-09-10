@@ -1,15 +1,16 @@
 package pktComms;
 
 // Where a Hash field is present, it must be SHA3 (Keccak 256) and it must
-// cover all of the other fields in the order shown.  Messages whose Hash
+// cover all other fields present in the order shown.  Messages whose Hash
 // fields do not match the other fields must be silently discarded (but 
 // should be logged, at least during development).
 
 // Opaque contents get copied through to the consensus layer
 message AppMsg {
-    optional uint64 MsgN        = 1;
-    optional bytes  ID          = 2;
-    optional bytes  Contents    = 3;
+    optional uint64 AppNdx      = 1;
+    optional uint64 MsgN        = 2;
+    optional bytes  ID          = 3;
+    optional bytes  Contents    = 4;
     optional bytes  Salt        = 12;
     optional bytes  Hash        = 13;
 }
@@ -19,47 +20,47 @@ message AppMsg {
 // is the sender's RSA sig public key; commsPubKey is the sender's RSA
 // comms public key.
 message Hello {
-    optional uint64 MsgN		= 1;
-    optional bytes  ID			= 2;
-    optional bytes  SigPubKey	= 3;
-    optional bytes  CommsPubKey	= 4;
-    optional string TCPAddr		= 5;
+    optional uint64 MsgN		= 2;
+    optional bytes  ID			= 3;
+    optional bytes  SigPubKey	= 4;
+    optional bytes  CommsPubKey	= 5;
+    optional string TCPAddr		= 6;
     optional bytes  Salt		= 12;
     optional bytes  Hash		= 13;
 }
 
 // Ends a communications cycle.
 message Bye {
-    optional uint64 MsgN		= 1;
-    optional bytes  ID			= 2;
+    optional uint64 MsgN		= 2;
+    optional bytes  ID			= 3;
     optional bytes  Salt		= 12;
     optional bytes  Hash		= 13;
 }
 
 // Sent at regular intervals.
 message KeepAlive {
-    optional uint64 MsgN		= 1;
-    optional bytes  ID			= 2;
+    optional uint64 MsgN		= 2;
+    optional bytes  ID			= 3;
     optional bytes  Salt		= 12;
     optional bytes  Hash		= 13;
 }
 
 message Ack {
-    optional uint64 MsgN		= 1;
-    optional bytes  ID			= 2;
-    optional uint64 YourMsgN	= 3;
-    optional bytes  YourID		= 4;
+    optional uint64 MsgN		= 2;
+    optional bytes  ID			= 3;
+    optional uint64 YourMsgN	= 4;
+    optional bytes  YourID		= 5;
     optional bytes  Salt		= 12;
     optional bytes  Hash		= 13;
 }
 
 message Error {
-    optional uint64 MsgN		= 1;
-    optional bytes  ID			= 2;
-    optional uint64 YourMsgN	= 3;
-    optional bytes  YourID		= 4;
-    optional uint64 ErrCode     = 5;
-    optional string ErrDesc     = 6;
+    optional uint64 MsgN		= 2;
+    optional bytes  ID			= 3;
+    optional uint64 YourMsgN	= 4;
+    optional bytes  YourID		= 5;
+    optional uint64 ErrCode     = 6;
+    optional string ErrDesc     = 7;
     optional bytes  Salt		= 12;
     optional bytes  Hash		= 13;
 }

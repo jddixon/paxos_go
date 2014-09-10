@@ -1,5 +1,20 @@
 paxos_go/TODO
 
+2014-09-09
+    * Link to online documenation in README.md must *NOT* appear in
+        ghpDoc/index.md
+
+    * Need to specify a protocol for commands sent to the server;
+        the protocol in p.proto is suitable only for communications
+        between the servers in a cluster.
+
+    * Need a test which spawns a cluster of N servers, runs say K
+        keep-alives, then shuts down with Bye/Ack.  The low-level
+        code must make available the attributes of cluster members
+        (ID, listening address (ipv4+port), sigPubKey, commsPubKey,
+        isLive, a boolean.  We also expose quorate, a boolean which
+        is true if a majority of cluster members are live.
+
 2014-09-07
     * edit gocheck_test.go, recently stolen from xlReg_u, to a form
         more appropriate for testing paxos_go

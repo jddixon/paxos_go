@@ -27,9 +27,10 @@ var _ = math.Inf
 
 // Opaque contents get copied through to the consensus layer
 type AppMsg struct {
-	MsgN             *uint64 `protobuf:"varint,1,opt" json:"MsgN,omitempty"`
-	ID               []byte  `protobuf:"bytes,2,opt" json:"ID,omitempty"`
-	Contents         []byte  `protobuf:"bytes,3,opt" json:"Contents,omitempty"`
+	AppNdx           *uint64 `protobuf:"varint,1,opt" json:"AppNdx,omitempty"`
+	MsgN             *uint64 `protobuf:"varint,2,opt" json:"MsgN,omitempty"`
+	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
+	Contents         []byte  `protobuf:"bytes,4,opt" json:"Contents,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
 	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -38,6 +39,13 @@ type AppMsg struct {
 func (m *AppMsg) Reset()         { *m = AppMsg{} }
 func (m *AppMsg) String() string { return proto.CompactTextString(m) }
 func (*AppMsg) ProtoMessage()    {}
+
+func (m *AppMsg) GetAppNdx() uint64 {
+	if m != nil && m.AppNdx != nil {
+		return *m.AppNdx
+	}
+	return 0
+}
 
 func (m *AppMsg) GetMsgN() uint64 {
 	if m != nil && m.MsgN != nil {
@@ -79,11 +87,11 @@ func (m *AppMsg) GetHash() []byte {
 // is the sender's RSA sig public key; commsPubKey is the sender's RSA
 // comms public key.
 type Hello struct {
-	MsgN             *uint64 `protobuf:"varint,1,opt" json:"MsgN,omitempty"`
-	ID               []byte  `protobuf:"bytes,2,opt" json:"ID,omitempty"`
-	SigPubKey        []byte  `protobuf:"bytes,3,opt" json:"SigPubKey,omitempty"`
-	CommsPubKey      []byte  `protobuf:"bytes,4,opt" json:"CommsPubKey,omitempty"`
-	TCPAddr          *string `protobuf:"bytes,5,opt" json:"TCPAddr,omitempty"`
+	MsgN             *uint64 `protobuf:"varint,2,opt" json:"MsgN,omitempty"`
+	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
+	SigPubKey        []byte  `protobuf:"bytes,4,opt" json:"SigPubKey,omitempty"`
+	CommsPubKey      []byte  `protobuf:"bytes,5,opt" json:"CommsPubKey,omitempty"`
+	TCPAddr          *string `protobuf:"bytes,6,opt" json:"TCPAddr,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
 	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -144,8 +152,8 @@ func (m *Hello) GetHash() []byte {
 
 // Ends a communications cycle.
 type Bye struct {
-	MsgN             *uint64 `protobuf:"varint,1,opt" json:"MsgN,omitempty"`
-	ID               []byte  `protobuf:"bytes,2,opt" json:"ID,omitempty"`
+	MsgN             *uint64 `protobuf:"varint,2,opt" json:"MsgN,omitempty"`
+	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
 	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -185,8 +193,8 @@ func (m *Bye) GetHash() []byte {
 
 // Sent at regular intervals.
 type KeepAlive struct {
-	MsgN             *uint64 `protobuf:"varint,1,opt" json:"MsgN,omitempty"`
-	ID               []byte  `protobuf:"bytes,2,opt" json:"ID,omitempty"`
+	MsgN             *uint64 `protobuf:"varint,2,opt" json:"MsgN,omitempty"`
+	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
 	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -225,10 +233,10 @@ func (m *KeepAlive) GetHash() []byte {
 }
 
 type Ack struct {
-	MsgN             *uint64 `protobuf:"varint,1,opt" json:"MsgN,omitempty"`
-	ID               []byte  `protobuf:"bytes,2,opt" json:"ID,omitempty"`
-	YourMsgN         *uint64 `protobuf:"varint,3,opt" json:"YourMsgN,omitempty"`
-	YourID           []byte  `protobuf:"bytes,4,opt" json:"YourID,omitempty"`
+	MsgN             *uint64 `protobuf:"varint,2,opt" json:"MsgN,omitempty"`
+	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
+	YourMsgN         *uint64 `protobuf:"varint,4,opt" json:"YourMsgN,omitempty"`
+	YourID           []byte  `protobuf:"bytes,5,opt" json:"YourID,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
 	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -281,12 +289,12 @@ func (m *Ack) GetHash() []byte {
 }
 
 type Error struct {
-	MsgN             *uint64 `protobuf:"varint,1,opt" json:"MsgN,omitempty"`
-	ID               []byte  `protobuf:"bytes,2,opt" json:"ID,omitempty"`
-	YourMsgN         *uint64 `protobuf:"varint,3,opt" json:"YourMsgN,omitempty"`
-	YourID           []byte  `protobuf:"bytes,4,opt" json:"YourID,omitempty"`
-	ErrCode          *uint64 `protobuf:"varint,5,opt" json:"ErrCode,omitempty"`
-	ErrDesc          *string `protobuf:"bytes,6,opt" json:"ErrDesc,omitempty"`
+	MsgN             *uint64 `protobuf:"varint,2,opt" json:"MsgN,omitempty"`
+	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
+	YourMsgN         *uint64 `protobuf:"varint,4,opt" json:"YourMsgN,omitempty"`
+	YourID           []byte  `protobuf:"bytes,5,opt" json:"YourID,omitempty"`
+	ErrCode          *uint64 `protobuf:"varint,6,opt" json:"ErrCode,omitempty"`
+	ErrDesc          *string `protobuf:"bytes,7,opt" json:"ErrDesc,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
 	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`

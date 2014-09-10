@@ -141,7 +141,7 @@ func (s *XLSuite) makeACluster(c *C, rng *xr.PRNG, epCount, size uint) (
 	rc *xg.RegCluster) {
 
 	var err error
-	c.Assert(xg.MIN_CLUSTER_SIZE <= size && size <= xg.MAX_CLUSTER_SIZE, 
+	c.Assert(xg.MIN_CLUSTER_SIZE <= size && size <= xg.MAX_CLUSTER_SIZE,
 		Equals, true)
 
 	attrs := uint64(rng.Int63())

@@ -31,8 +31,8 @@ func (d *XLSuite) TestPaxosPkt(c *C) {
 	binary.Write(seqBuf, binary.LittleEndian, mySeqN)
 
 	msgLen := uint(64 + rng.Intn(64))
-	msg	:= rng.SomeBytes(msgLen) // fill with rubbish
-	salt := rng.SomeBytes(8)		// still more rubbish
+	msg := rng.SomeBytes(msgLen) // fill with rubbish
+	salt := rng.SomeBytes(8)     // still more rubbish
 
 	digest := sha3.NewKeccak256()
 	digest.Write(id)
