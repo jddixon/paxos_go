@@ -45,7 +45,7 @@ func (d *XLSuite) TestPaxosPkt(c *C) {
 	var pkt = AppMsg{MsgN: &mySeqN,
 		Contents: msg,
 		Salt:     salt,
-		Hash:     hash}
+		DigSig:   hash}
 
 	// In each of these cases, the test proves that the field
 	// was present; otherwise the 'empty' value (zero, nil, etc)
@@ -61,7 +61,7 @@ func (d *XLSuite) TestPaxosPkt(c *C) {
 	saltOut := pkt.GetSalt()
 	d.compareByteSlices(c, saltOut, salt)
 
-	hashOut := pkt.GetHash()
+	hashOut := pkt.GetDigSig()
 	d.compareByteSlices(c, hashOut, hash)
 }
 

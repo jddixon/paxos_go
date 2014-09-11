@@ -32,7 +32,7 @@ type AppMsg struct {
 	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
 	Contents         []byte  `protobuf:"bytes,4,opt" json:"Contents,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
-	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
+	DigSig           []byte  `protobuf:"bytes,13,opt" json:"DigSig,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -75,9 +75,9 @@ func (m *AppMsg) GetSalt() []byte {
 	return nil
 }
 
-func (m *AppMsg) GetHash() []byte {
+func (m *AppMsg) GetDigSig() []byte {
 	if m != nil {
-		return m.Hash
+		return m.DigSig
 	}
 	return nil
 }
@@ -93,7 +93,7 @@ type Hello struct {
 	CommsPubKey      []byte  `protobuf:"bytes,5,opt" json:"CommsPubKey,omitempty"`
 	TCPAddr          *string `protobuf:"bytes,6,opt" json:"TCPAddr,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
-	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
+	DigSig           []byte  `protobuf:"bytes,13,opt" json:"DigSig,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -143,9 +143,9 @@ func (m *Hello) GetSalt() []byte {
 	return nil
 }
 
-func (m *Hello) GetHash() []byte {
+func (m *Hello) GetDigSig() []byte {
 	if m != nil {
-		return m.Hash
+		return m.DigSig
 	}
 	return nil
 }
@@ -155,7 +155,7 @@ type Bye struct {
 	MsgN             *uint64 `protobuf:"varint,2,opt" json:"MsgN,omitempty"`
 	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
-	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
+	DigSig           []byte  `protobuf:"bytes,13,opt" json:"DigSig,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -184,9 +184,9 @@ func (m *Bye) GetSalt() []byte {
 	return nil
 }
 
-func (m *Bye) GetHash() []byte {
+func (m *Bye) GetDigSig() []byte {
 	if m != nil {
-		return m.Hash
+		return m.DigSig
 	}
 	return nil
 }
@@ -196,7 +196,7 @@ type KeepAlive struct {
 	MsgN             *uint64 `protobuf:"varint,2,opt" json:"MsgN,omitempty"`
 	ID               []byte  `protobuf:"bytes,3,opt" json:"ID,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
-	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
+	DigSig           []byte  `protobuf:"bytes,13,opt" json:"DigSig,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -225,9 +225,9 @@ func (m *KeepAlive) GetSalt() []byte {
 	return nil
 }
 
-func (m *KeepAlive) GetHash() []byte {
+func (m *KeepAlive) GetDigSig() []byte {
 	if m != nil {
-		return m.Hash
+		return m.DigSig
 	}
 	return nil
 }
@@ -238,7 +238,7 @@ type Ack struct {
 	YourMsgN         *uint64 `protobuf:"varint,4,opt" json:"YourMsgN,omitempty"`
 	YourID           []byte  `protobuf:"bytes,5,opt" json:"YourID,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
-	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
+	DigSig           []byte  `protobuf:"bytes,13,opt" json:"DigSig,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -281,9 +281,9 @@ func (m *Ack) GetSalt() []byte {
 	return nil
 }
 
-func (m *Ack) GetHash() []byte {
+func (m *Ack) GetDigSig() []byte {
 	if m != nil {
-		return m.Hash
+		return m.DigSig
 	}
 	return nil
 }
@@ -296,7 +296,7 @@ type Error struct {
 	ErrCode          *uint64 `protobuf:"varint,6,opt" json:"ErrCode,omitempty"`
 	ErrDesc          *string `protobuf:"bytes,7,opt" json:"ErrDesc,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
-	Hash             []byte  `protobuf:"bytes,13,opt" json:"Hash,omitempty"`
+	DigSig           []byte  `protobuf:"bytes,13,opt" json:"DigSig,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -353,9 +353,9 @@ func (m *Error) GetSalt() []byte {
 	return nil
 }
 
-func (m *Error) GetHash() []byte {
+func (m *Error) GetDigSig() []byte {
 	if m != nil {
-		return m.Hash
+		return m.DigSig
 	}
 	return nil
 }

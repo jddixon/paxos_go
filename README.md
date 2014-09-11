@@ -3,16 +3,18 @@
 A library enabling the achievement of consensus within a cluster of 
 independent computational units with unique cryptographic 
 identities.  Intra-cluster communications pass over a full mesh of inter-node
-connections.  Clients can query the cluster or propose new commands which 
+connections.  **Commanders** can query the cluster or propose new commands 
+which 
 will pass through the consensus process and upon agreement will become part
 of the cluster's state.
 
 ## Clusters
 
 As the term is used here, a **cluster** is a group of coooperating processors,
-**servers**.  The servers are driven by commands issued by **clients**; the
-clients are not themselves part of the cluster and generally do not communicate
-with one another.  Clients issue **commands**.  Commands are not issued in 
+**servers**.  The servers are driven by commands issued by **commanders**; the
+commanders are not themselves part of the cluster and generally do not 
+communicate
+with one another.  Commanders issue **commands**.  Commands are not issued in 
 any particular order and may take an arbitrary time to deliver.  While a 
 command may never be corrupt, it may be lost or delivered more than once.
 
@@ -31,7 +33,7 @@ we are guaranteed that either *a* is a prefix of *b* or *b* is a prefix of
 A state machine consists of a number of variables.  In paxos_go, one of 
 these is *stateNdx*, a 64-bit unsigned value.  Each execution of a command
 causes stateNdx to be incremented.  Upon successful execution of a command,
-the cluster always returns at least stateNdx to the client which requested
+the cluster always returns at least stateNdx to the commander which requested
 execution of the command.
 
 ## Applications
@@ -51,9 +53,10 @@ to each of its peers, using the protocol specified in pktComms/p.proto.
 The Hello message contains a message number (**MsgN**), which is always 1;
 the 32-byte nodeID of the sender; the RSA public
 key used for digital signatures (**SigPubKey**); the RSA public key used
-for encoding commincations (**CommsPubKey**); the address the server 
+for encoding communications (**CommsPubKey**); the address the server 
 listens on (its ipV4 address and port number in string form); optionally
-a **Salt**; and the SHA3-256 **Hash** of the fields present. 
+a **Salt**; and the **digital signature** derived from the SHA3-256 hash 
+of the fields present. 
 
 If the peer accepts the Hello, it will reply with an **Ack**, as specified
 in the protocol, and leave the connection open.  If there was an error in 
@@ -73,10 +76,11 @@ an Ack and close the connection.
 
 ## Application Front End
 
-In paxos_go, only back-end clients may originate commands which alter the
+In paxos_go, only back-end commanders may originate commands which alter the
 state of an application's state machine.  Commands to a server contain
-enough information to identify the back-end client and the application.
-Such commands also contain a hash which can be used to verify the integrity
+enough information to identify the back-end commander and the application.
+Such commands also contain a digital signature which can be used to verify 
+the integrity
 of the command.  If verification fails, the message (the command) is 
 discarded and an error message returned.
 

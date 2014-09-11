@@ -1,5 +1,11 @@
 paxos_go/pktComms/TODO
 
+2014-09-11
+    * Fix references to hash in p_test.go, which should actually refer
+        to the SHA3-256-based digital signature
+    * Fix the test itself, which should fail because it's a hash rather
+        than the expected digSig
+
 2014-09-05
     * revise to use tcpIP rather than UDP for comms
 
