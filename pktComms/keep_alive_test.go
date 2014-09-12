@@ -22,17 +22,22 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 
 	/////////////////////////////////////////////////////////////////
 	// A: Launch N tcNodes for cluster cl to coordinate through
-	// xlReg at 127.0.0.1:PPPPP
+	// xlReg at 127.0.0.1:PPPPP.   Each tcNode configures acceptor
+	// An = a random tcpip endpoint 127.0.0.1:Pn; selects keys sPriv, cPriv
 	/////////////////////////////////////////////////////////////////
 
 	// we listen on three ports: command, intra-cluster comms, and
 	// a third for external clients
 	epCount := uint(3)
 	maxSize := uint(2 + rng.Intn(6)) // so from 2 to 7
-	cl := s.makeACluster(c, rng, epCount, maxSize)
+	cl, nodes, ckPrivs, skPrivs := s.makeACluster(c, rng, epCount, maxSize)
+
+	// XXX nodes, key slices not currently used
+	_, _, _ = nodes, ckPrivs, skPrivs
 
 	c.Assert(cl.MaxSize(), Equals, maxSize)
-	c.Assert(cl.Size(), Equals, maxSize) //
+	c.Assert(cl.Size(), Equals, maxSize)
+	c.Assert(maxSize, Equals, uint(len(nodes)))
 
 	// Verify that member names are unique within the cluster
 	ids := make([][]byte, maxSize)
@@ -78,12 +83,14 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 	c.Assert(maxSize, Equals, count)
 
 	/////////////////////////////////////////////////////////////////
-	// B: Each tcNode confirgures acceptor An = a random tcpip
-	// endpoint 127.0.0.1:Pn; selects keys sPriv, cPriv; selects
-	// nodeID = SHA3(127.0.0.1:Pn (+) sPriv (+) cPriv
+	// B: Launch an ephemeral xlReg server.
 	/////////////////////////////////////////////////////////////////
-
-	// XXX STUB
+	es, err := xg.NewEphServer()
+	c.Assert(es, NotNil)
+	defer es.Close()
+	c.Assert(err, IsNil)
+	err = es.Run() // in separate goroutine
+	c.Assert(err, IsNil)
 
 	/////////////////////////////////////////////////////////////////
 	// C: Each tcNode initiates xlReg cycle, at end of which N-1 peers
@@ -139,7 +146,8 @@ func (s *XLSuite) TestClusterSerialization(c *C) {
 	// Generate a random cluster
 	epCount := uint(1 + rng.Intn(3)) // so from 1 to 3
 	size := uint(2 + rng.Intn(6))    // so from 2 to 7
-	cl := s.makeACluster(c, rng, epCount, size)
+	// XXX MEMBERS, KEY SLICES NOT YET USED
+	cl, _, _, _ := s.makeACluster(c, rng, epCount, size)
 
 	// Serialize it
 	serialized := cl.String()

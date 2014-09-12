@@ -65,7 +65,7 @@ func (s *XLSuite) makeALocalTCPEndPoint(c *C, node *xn.Node) {
 // and sigKey.   This code was hacked from xlNode_go/node_test.go
 // and then simplified a bit.
 //
-func (s *XLSuite) makeHostAndKeys(c *C, rng *xr.PRNG,
+func (s *XLSuite) makeNodeAndKeys(c *C, rng *xr.PRNG,
 	namesInUse map[string]bool) (n *xn.Node, ckPriv, skPriv *rsa.PrivateKey) {
 
 	var name string
@@ -125,11 +125,30 @@ func (s *XLSuite) makeAMemberInfo(c *C, rng *xr.PRNG) *xg.MemberInfo {
 	}
 }
 
+// Returns a MemberInfo structure for a given node.  The BaseNode is
+// cloned.
+func (s *XLSuite) memberInfoForNode(c *C, rng *xr.PRNG, node *xn.Node) *xg.MemberInfo {
+
+	attrs := uint64(rng.Int63())
+	bn, err := xn.NewBaseNode(
+		node.GetName(),
+		node.GetNodeID(),
+		node.GetCommsPublicKey(),
+		node.GetSigPublicKey(),
+		nil) // overlays
+	c.Assert(err, IsNil)
+	return &xg.MemberInfo{
+		Attrs:    attrs,
+		BaseNode: *bn,
+	}
+}
+
 // Make a RegCluster for test purposes.  Cluster member names are guaranteed
 // to be unique but the name of the cluster itself may not be.
 //
 func (s *XLSuite) makeACluster(c *C, rng *xr.PRNG, epCount, size uint) (
-	rc *xg.RegCluster) {
+	rc *xg.RegCluster,
+	members []*xn.Node, ckPrivs, skPrivs []*rsa.PrivateKey) {
 
 	var err error
 	c.Assert(xg.MIN_CLUSTER_SIZE <= size && size <= xg.MAX_CLUSTER_SIZE,
@@ -142,18 +161,17 @@ func (s *XLSuite) makeACluster(c *C, rng *xr.PRNG, epCount, size uint) (
 	rc, err = xg.NewRegCluster(name, id, attrs, size, epCount)
 	c.Assert(err, IsNil)
 
+	namesInUse := make(map[string]bool)
+
 	for count := uint(0); count < size; count++ {
-		cm := s.makeAMemberInfo(c, rng)
-		for {
-			if _, ok := rc.MembersByName[cm.GetName()]; ok {
-				// name is in use, so try again
-				cm = s.makeAMemberInfo(c, rng)
-			} else {
-				err = rc.AddMember(cm)
-				c.Assert(err, IsNil)
-				break
-			}
-		}
+		member, ckPriv, skPriv := s.makeNodeAndKeys(c, rng, namesInUse)
+		members = append(members, member)
+		ckPrivs = append(ckPrivs, ckPriv)
+		skPrivs = append(skPrivs, skPriv)
+		cm := s.memberInfoForNode(c, rng, member)
+		err = rc.AddMember(cm)
+		c.Assert(err, IsNil)
+
 	}
 	return
 }

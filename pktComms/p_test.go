@@ -61,8 +61,8 @@ func (d *XLSuite) TestPaxosPkt(c *C) {
 	saltOut := pkt.GetSalt()
 	d.compareByteSlices(c, saltOut, salt)
 
-	hashOut := pkt.GetDigSig()
-	d.compareByteSlices(c, hashOut, hash)
+	digSigFound := pkt.GetDigSig()
+	d.compareByteSlices(c, digSigFound, hash)
 }
 
 func (d *XLSuite) compareByteSlices(c *C, a []byte, b []byte) {
