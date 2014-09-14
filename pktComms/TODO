@@ -1,5 +1,11 @@
 paxos_go/pktComms/TODO
 
+2014-09-12
+    * revise keep_alive_test to follow xlReg_go/eph_server_test.go
+        as model
+        - this means scrapping or revising functions in misc_test.go
+        - 
+
 2014-09-11
     * Fix references to hash in p_test.go, which should actually refer
         to the SHA3-256-based digital signature
