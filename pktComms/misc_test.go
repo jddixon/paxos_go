@@ -18,6 +18,93 @@ const (
 	VERBOSITY = 1
 )
 
+// Create and start an ephemeral xlReg server -----------------------
+// Calling routine should call defer eph.Close()
+func (s *XLSuite) launchEphServer(c *C) (eph *xg.EphServer,
+	reg *xg.Registry, regID *xi.NodeID, server *xg.RegServer) {
+
+	eph, err := xg.NewEphServer()
+	c.Assert(eph, NotNil)
+	c.Assert(err, IsNil)
+
+	server = eph.Server
+
+	// start the ephemeral server -------------------------
+	err = eph.Run()
+	c.Assert(err, IsNil)
+
+	// verify Bloom filter is running
+	reg = &eph.Server.Registry
+	c.Assert(reg, NotNil)
+	regID = reg.GetNodeID()
+	c.Assert(reg.IDCount(), Equals, uint(1)) // the registry's own ID
+	found, err := reg.ContainsID(regID)
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, true)
+
+	return
+}
+
+// Create and register a solo cluster -------------------------------
+func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
+	reg *xg.Registry, regID *xi.NodeID, server *xg.RegServer) (
+	clusterName string, clusterAttrs uint64, K uint32) {
+
+	serverName := server.GetName()
+	serverID := server.GetNodeID()
+	serverEnd := server.GetEndPoint(0)
+	// DEBUG
+	fmt.Printf("server endPoint 0: %s\n", serverEnd)
+	// END
+	serverCK := server.GetCommsPublicKey()
+	serverSK := server.GetSigPublicKey()
+	c.Assert(serverEnd, NotNil)
+
+	clusterName = rng.NextFileName(8)
+	clusterAttrs = uint64(rng.Int63())
+	K = uint32(2 + rng.Intn(6)) // so the size is 2 .. 7
+
+	// 3. create an AdminClient, use it to get the clusterID --------
+	an, err := xg.NewAdminClient(serverName, serverID, serverEnd,
+		serverCK, serverSK, clusterName, clusterAttrs, K, uint32(3), nil)
+	c.Assert(err, IsNil)
+
+	an.Run()
+	<-an.DoneCh
+
+	c.Assert(an.ClusterID, NotNil)          // the purpose of the exercise
+	c.Assert(an.EpCount, Equals, uint32(3)) // NEED >= 2
+	c.Assert(an.ClusterSize, Equals, K)
+
+	anID := an.ClientID
+	c.Assert(reg.IDCount(), Equals, uint(3)) // regID + anID + clusterID
+
+	// DEBUG
+	fmt.Printf("regID     %s\n", regID.String())
+	fmt.Printf("anID      %s\n", anID.String())
+	fmt.Printf("clusterID %s\n", an.ClusterID.String())
+	fmt.Printf("  size    %d\n", an.ClusterSize)
+	// END
+
+	found, err := reg.ContainsID(regID)
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, true)
+
+	found, err = reg.ContainsID(anID)
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, true)
+
+	found, err = reg.ContainsID(an.ClusterID)
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, true) // GEEP
+
+	return
+}
+
+/////////////////////////////////////////////////////////////////////
+// NEW CODE ABOVE THIS LINE, OLD CODE BELOW
+/////////////////////////////////////////////////////////////////////
+
 /////////////////////////////////////////////////////////////////////
 // These test functions were hacked from xlReg_go and then modified for
 // use in testing paxos_go.
@@ -146,7 +233,7 @@ func (s *XLSuite) memberInfoForNode(c *C, rng *xr.PRNG, node *xn.Node) *xg.Membe
 // Make a RegCluster for test purposes.  Cluster member names are guaranteed
 // to be unique but the name of the cluster itself may not be.
 //
-func (s *XLSuite) makeACluster(c *C, rng *xr.PRNG, epCount, size uint) (
+func (s *XLSuite) makeACluster(c *C, rng *xr.PRNG, epCount, size uint32) (
 	rc *xg.RegCluster,
 	members []*xn.Node, ckPrivs, skPrivs []*rsa.PrivateKey) {
 
@@ -163,7 +250,7 @@ func (s *XLSuite) makeACluster(c *C, rng *xr.PRNG, epCount, size uint) (
 
 	namesInUse := make(map[string]bool)
 
-	for count := uint(0); count < size; count++ {
+	for count := uint32(0); count < size; count++ {
 		member, ckPriv, skPriv := s.makeNodeAndKeys(c, rng, namesInUse)
 		members = append(members, member)
 		ckPrivs = append(ckPrivs, ckPriv)

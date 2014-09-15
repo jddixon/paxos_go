@@ -21,78 +21,18 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 	rng := xr.MakeSimpleRNG()
 
 	// 1. Launch an ephemeral xlReg server --------------------------
+	eph, reg, regID, server := s.launchEphServer(c)
+	defer eph.Close()
 
-	es, err := xg.NewEphServer()
-	c.Assert(es, NotNil)
-	c.Assert(err, IsNil)
+	// 2. Create a random cluster name and size ---------------------
+	clusterName, clusterAttrs, K := s.createAndRegSoloCluster(c, rng,
+		reg, regID, server)
 
-	server := es.Server
-
-	serverName := server.GetName()
-	serverID := server.GetNodeID()
-	serverEnd := server.GetEndPoint(0)
-	serverCK := server.GetCommsPublicKey()
-	serverSK := server.GetSigPublicKey()
-	c.Assert(serverEnd, NotNil)
-
-	// start the ephemeral server -------------------------
-	err = es.Run()
-	c.Assert(err, IsNil)
-	defer es.Close() // stop the server by closing its acceptor
-
-	// verify Bloom filter is running
-	reg := es.Server.Registry
-	c.Assert(reg, NotNil)
-	regID := reg.GetNodeID()
-	c.Assert(reg.IDCount(), Equals, uint(1)) // the registry's own ID
-	found, err := reg.ContainsID(regID)
-	c.Assert(found, Equals, true)
-	
-	// 2. create a random cluster name and size ---------------------
-	
-	clusterName := rng.NextFileName(8)
-	clusterAttrs := uint64(rng.Int63())
-	K := uint(2 + rng.Intn(6)) // so the size is 2 .. 7
-
-	// 3. create an AdminClient, use it to get the clusterID --------
-	an, err := xg.NewAdminClient(serverName, serverID, serverEnd,
-		serverCK, serverSK, clusterName, clusterAttrs, K, uint(3), nil)
-	c.Assert(err, IsNil)
-
-	an.Run()
-	<-an.DoneCh
-
-	c.Assert(an.ClusterID, NotNil) // the purpose of the exercise
-	c.Assert(an.EpCount, Equals, uint(3))		// NEED >= 2
-	c.Assert(an.ClusterSize, Equals, K)
-
-	anID := an.ClientID
-	c.Assert(reg.IDCount(), Equals, uint(3)) // regID + anID + clusterID
-
-	// DEBUG
-	fmt.Printf("regID     %s\n", regID.String())
-	fmt.Printf("anID      %s\n", anID.String())
-	fmt.Printf("clusterID %s\n", an.ClusterID.String())
-	fmt.Printf("  size    %d\n", an.ClusterSize)
-	// END
-
-	found, err = reg.ContainsID(regID)
-	c.Assert(err, IsNil)
-	c.Assert(found, Equals, true)
-
-	found, err = reg.ContainsID(anID)
-	c.Assert(err, IsNil)
-	c.Assert(found, Equals, true)
-
-	found, err = reg.ContainsID(an.ClusterID)
-	c.Assert(err, IsNil)
-	// c.Assert(found, Equals, true)				// XXX FALSE
-
+	_, _, _ = clusterName, clusterAttrs, K // XXX NOT YET USED
 
 	////////////////////////////////////////////////////////////////////
 	// XXX WORKING HERE, MODIFYING TO FOLLOW xlReg eph_server_test model
 	////////////////////////////////////////////////////////////////////
-
 
 	/////////////////////////////////////////////////////////////////
 	// B: Launch N tcNodes for cluster cl to coordinate through
@@ -102,8 +42,8 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 
 	// we listen on three ports: command, intra-cluster comms, and
 	// a third for external clients
-	epCount := uint(3)
-	maxSize := uint(2 + rng.Intn(6)) // so from 2 to 7
+	epCount := uint32(3)
+	maxSize := uint32(2 + rng.Intn(6)) // so from 2 to 7
 	cl, nodes, ckPrivs, skPrivs := s.makeACluster(c, rng, epCount, maxSize)
 
 	// XXX nodes, key slices not currently used
@@ -111,13 +51,13 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 
 	c.Assert(cl.MaxSize(), Equals, maxSize)
 	c.Assert(cl.Size(), Equals, maxSize)
-	c.Assert(maxSize, Equals, uint(len(nodes)))
+	c.Assert(maxSize, Equals, uint32(len(nodes)))
 
 	// Verify that member names are unique within the cluster
 	ids := make([][]byte, maxSize)
 	names := make([]string, maxSize)
-	nameMap := make(map[string]uint)
-	for i := uint(0); i < maxSize; i++ {
+	nameMap := make(map[string]uint32)
+	for i := uint32(0); i < maxSize; i++ {
 		member := cl.Members[i]
 		names[i] = member.GetName()
 		nameMap[names[i]] = i
@@ -127,18 +67,18 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 		ids[i] = id
 	}
 	// if the names are not unique, map will be smaller
-	c.Assert(maxSize, Equals, uint(len(nameMap)))
+	c.Assert(maxSize, Equals, uint32(len(nameMap)))
 
 	// verify that the RegCluster.MembersByName index is correct
-	for i := uint(0); i < maxSize; i++ {
+	for i := uint32(0); i < maxSize; i++ {
 		name := names[i]
 		member := cl.MembersByName[name]
 		c.Assert(name, Equals, member.GetName())
 	}
 
 	// verify that the RegCluster.MembersByID index is correct
-	count := uint(0) // number of successful type assertions
-	for i := uint(0); i < maxSize; i++ {
+	count := uint32(0) // number of successful type assertions
+	for i := uint32(0); i < maxSize; i++ {
 		id := ids[i]
 		mbr, err := cl.MembersByID.Find(id)
 		c.Assert(err, IsNil)
@@ -208,8 +148,8 @@ func (s *XLSuite) TestClusterSerialization(c *C) {
 	rng := xr.MakeSimpleRNG()
 
 	// Generate a random cluster
-	epCount := uint(1 + rng.Intn(3)) // so from 1 to 3
-	size := uint(2 + rng.Intn(6))    // so from 2 to 7
+	epCount := uint32(1 + rng.Intn(3)) // so from 1 to 3
+	size := uint32(2 + rng.Intn(6))    // so from 2 to 7
 	// XXX MEMBERS, KEY SLICES NOT YET USED
 	cl, _, _, _ := s.makeACluster(c, rng, epCount, size)
 

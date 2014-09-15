@@ -4,7 +4,6 @@ paxos_go/pktComms/TODO
     * revise keep_alive_test to follow xlReg_go/eph_server_test.go
         as model
         - this means scrapping or revising functions in misc_test.go
-        - 
 
 2014-09-11
     * Fix references to hash in p_test.go, which should actually refer
@@ -12,8 +11,8 @@ paxos_go/pktComms/TODO
     * Fix the test itself, which should fail because it's a hash rather
         than the expected digSig
 
-2014-09-05
-    * revise to use tcpIP rather than UDP for comms
+2014-09-05                                                              * DROP
+    * revise to use tcpIP rather than UDP for comms                     * DROP
 
 2014-09-04
     * fix 'flag redefined' error in gocheck                             * DONE
