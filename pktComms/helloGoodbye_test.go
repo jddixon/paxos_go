@@ -1,6 +1,6 @@
 package pktComms
 
-// paxos_go/pktComms/keep_alive_test.go
+// paxos_go/pktComms/helloGoodbye_test.go
 
 import (
 	"fmt"
@@ -9,14 +9,11 @@ import (
 	. "gopkg.in/check.v1"
 )
 
-/////////////////////////////////////////////////////////////////////
-// XXX THIS IS BEING HACKED INTO A TEST OF A CLUSTER JUST RUNNING pktComms
-// KEEP-ALIVE MESSAGES
-/////////////////////////////////////////////////////////////////////
-
-func (s *XLSuite) TestKeepAlives(c *C) {
+// Launch K servers, have them say hello to one another, pause, then
+// have them say goodbye.
+func (s *XLSuite) TestHelloGoodbye(c *C) {
 	if VERBOSITY > 0 {
-		fmt.Println("TEST_KEEP_ALIVES")
+		fmt.Println("TEST_HELLO_GOODBYE")
 	}
 	rng := xr.MakeSimpleRNG()
 
@@ -25,10 +22,15 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 	defer eph.Close()
 
 	// 2. Create a random cluster name and size ---------------------
-	clusterName, clusterAttrs, K := s.createAndRegSoloCluster(c, rng,
+	clusterName, clusterAttrs, clusterID, K := s.createAndRegSoloCluster(c, rng,
 		reg, regID, server)
 
-	_, _, _ = clusterName, clusterAttrs, K // XXX NOT YET USED
+	// 3  Create K cluster members
+    uc, ucNames := s.createKMemberPktComms(c, rng, server,
+	    clusterName, clusterAttrs , clusterID , K)
+
+	// XXX not yet used
+	_,_ = uc, ucNames
 
 	////////////////////////////////////////////////////////////////////
 	// XXX WORKING HERE, MODIFYING TO FOLLOW xlReg eph_server_test model
@@ -141,28 +143,4 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 	// XXX STUB
 
 }
-func (s *XLSuite) TestClusterSerialization(c *C) {
-	if VERBOSITY > 0 {
-		fmt.Println("TEST_CLUSTER_SERIALIZATION")
-	}
-	rng := xr.MakeSimpleRNG()
 
-	// Generate a random cluster
-	epCount := uint32(1 + rng.Intn(3)) // so from 1 to 3
-	size := uint32(2 + rng.Intn(6))    // so from 2 to 7
-	// XXX MEMBERS, KEY SLICES NOT YET USED
-	cl, _, _, _ := s.makeACluster(c, rng, epCount, size)
-
-	// Serialize it
-	serialized := cl.String()
-
-	// Reverse the serialization
-	deserialized, rest, err := xg.ParseRegCluster(serialized)
-	c.Assert(err, IsNil)
-	c.Assert(deserialized, Not(IsNil))
-	c.Assert(len(rest), Equals, 0)
-
-	// Verify that the deserialized cluster is identical to the original
-	c.Assert(deserialized.Equal(cl), Equals, true)
-
-}

@@ -1,5 +1,12 @@
 paxos_go/pktComms/TODO
 
+2014-09-15
+    * helloGoodbye_test.go spins up K nodes; each says hello to its
+        K-1 peers, pause, then send Bye to peers and shuts down
+        - all functionality in misc_test.go, called using one-liners
+    * when helloGoodbye_test.go runs OK, modify keepAlive_test.go
+        to use the same approach; so it just adds another one-liner
+
 2014-09-12
     * revise keep_alive_test to follow xlReg_go/eph_server_test.go
         as model

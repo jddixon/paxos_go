@@ -48,14 +48,11 @@ func (s *XLSuite) launchEphServer(c *C) (eph *xg.EphServer,
 // Create and register a solo cluster -------------------------------
 func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 	reg *xg.Registry, regID *xi.NodeID, server *xg.RegServer) (
-	clusterName string, clusterAttrs uint64, K uint32) {
+	clusterName string, clusterAttrs uint64, clusterID *xi.NodeID, K uint32) {
 
 	serverName := server.GetName()
 	serverID := server.GetNodeID()
 	serverEnd := server.GetEndPoint(0)
-	// DEBUG
-	fmt.Printf("server endPoint 0: %s\n", serverEnd)
-	// END
 	serverCK := server.GetCommsPublicKey()
 	serverSK := server.GetSigPublicKey()
 	c.Assert(serverEnd, NotNil)
@@ -64,7 +61,7 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 	clusterAttrs = uint64(rng.Int63())
 	K = uint32(2 + rng.Intn(6)) // so the size is 2 .. 7
 
-	// 3. create an AdminClient, use it to get the clusterID --------
+	// create an AdminClient, use it to get the clusterID --------
 	an, err := xg.NewAdminClient(serverName, serverID, serverEnd,
 		serverCK, serverSK, clusterName, clusterAttrs, K, uint32(3), nil)
 	c.Assert(err, IsNil)
@@ -78,6 +75,7 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 
 	anID := an.ClientID
 	c.Assert(reg.IDCount(), Equals, uint(3)) // regID + anID + clusterID
+	clusterID = an.ClusterID
 
 	// DEBUG
 	fmt.Printf("regID     %s\n", regID.String())
@@ -100,6 +98,54 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 
 	return
 }
+
+// Create PktComm layers for K members 
+//
+///////////////////////////////////////////////////////////////////////
+// XXX THESE ARE JUST VANILLA xlReg "CLIENTS"; WE NEED pktComms MODULES
+// XXX epCount IS SET TO 1, WHICH IS WRONG IN GENERAL.
+///////////////////////////////////////////////////////////////////////
+func (s *XLSuite) createKMemberPktComms(c *C, rng *xr.PRNG,
+	server *xg.RegServer,
+	clusterName string, clusterAttrs uint64, clusterID *xi.NodeID,
+	K uint32) (uc []*xg.UserClient, ucNames []string){
+
+	serverName := server.GetName()
+	serverID := server.GetNodeID()
+	serverEnd := server.GetEndPoint(0)
+	serverCK := server.GetCommsPublicKey()
+	serverSK := server.GetSigPublicKey()
+	c.Assert(serverEnd, NotNil)
+
+	var err error
+	uc = make([]*xg.UserClient, K)
+	ucNames = make([]string, K)
+	namesInUse := make(map[string]bool)
+	for i := uint32(0); i < K; i++ {
+		var ep *xt.TcpEndPoint
+		ep, err = xt.NewTcpEndPoint("127.0.0.1:0")
+		c.Assert(err, IsNil)
+		e := []xt.EndPointI{ep}
+		newName := rng.NextFileName(8)
+		_, ok := namesInUse[newName]
+		for ok {
+			newName = rng.NextFileName(8)
+			_, ok = namesInUse[newName]
+		}
+		namesInUse[newName] = true
+		ucNames[i] = newName // guaranteed to be LOCALLY unique
+		uc[i], err = xg.NewUserClient(ucNames[i], "",
+			nil, nil, // private RSA keys are generated if nil
+			serverName, serverID, serverEnd, serverCK, serverSK,
+			clusterName, clusterAttrs, clusterID,
+			K, uint32(1), e) //1 is endPoint count
+		c.Assert(err, IsNil)
+		c.Assert(uc[i], NotNil)
+		c.Assert(uc[i].ClusterID, NotNil)
+	}
+	return
+}
+
 
 /////////////////////////////////////////////////////////////////////
 // NEW CODE ABOVE THIS LINE, OLD CODE BELOW
