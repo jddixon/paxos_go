@@ -15,6 +15,6 @@ type XLSuite struct{}
 var _ = Suite(&XLSuite{})
 
 const (
-	KA_COUNT	= 15	// number of keepalives to send in tests
+	KA_COUNT    = 15 // number of keepalives to send in tests
 	KA_INTERVAL = 200 * time.Millisecond
 )

@@ -5,14 +5,9 @@ package pktComms
 import (
 	"fmt"
 	xr "github.com/jddixon/rnglib_go"
-	xg "github.com/jddixon/xlReg_go"
+	//xg "github.com/jddixon/xlReg_go"
 	. "gopkg.in/check.v1"
 )
-
-/////////////////////////////////////////////////////////////////////
-// XXX THIS IS BEING HACKED INTO A TEST OF A CLUSTER JUST RUNNING pktComms
-// KEEP-ALIVE MESSAGES
-/////////////////////////////////////////////////////////////////////
 
 func (s *XLSuite) TestKeepAlives(c *C) {
 	if VERBOSITY > 0 {
@@ -28,10 +23,11 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 	clusterName, clusterAttrs, clusterID, K := s.createAndRegSoloCluster(c, rng,
 		reg, regID, server)
 
-	_,_, _, _ = clusterName, clusterAttrs, clusterID, K // XXX NOT YET USED
+	_, _, _, _ = clusterName, clusterAttrs, clusterID, K // XXX NOT YET USED
 
 	////////////////////////////////////////////////////////////////////
-	// XXX WORKING HERE, MODIFYING TO FOLLOW xlReg eph_server_test model
+	// XXX COMPLETE helloGoodbye_test.go, THEN MODIFY WHAT FOLLOWS IN
+	// SAME SPIRIT
 	////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////////////////////////////////////////
@@ -40,61 +36,61 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 	// An = a random tcpip endpoint 127.0.0.1:Pn; selects keys sPriv, cPriv
 	/////////////////////////////////////////////////////////////////
 
-	// we listen on three ports: command, intra-cluster comms, and
-	// a third for external clients
-	epCount := uint32(3)
-	maxSize := uint32(2 + rng.Intn(6)) // so from 2 to 7
-	cl, nodes, ckPrivs, skPrivs := s.makeACluster(c, rng, epCount, maxSize)
+	//// we listen on three ports: command, intra-cluster comms, and
+	//// a third for external clients
+	//epCount := uint32(3)
+	//maxSize := uint32(2 + rng.Intn(6)) // so from 2 to 7
+	//cl, nodes, ckPrivs, skPrivs := s.makeACluster(c, rng, epCount, maxSize)
 
-	// XXX nodes, key slices not currently used
-	_, _, _ = nodes, ckPrivs, skPrivs
+	//// XXX nodes, key slices not currently used
+	//_, _, _ = nodes, ckPrivs, skPrivs
 
-	c.Assert(cl.MaxSize(), Equals, maxSize)
-	c.Assert(cl.Size(), Equals, maxSize)
-	c.Assert(maxSize, Equals, uint32(len(nodes)))
+	//c.Assert(cl.MaxSize(), Equals, maxSize)
+	//c.Assert(cl.Size(), Equals, maxSize)
+	//c.Assert(maxSize, Equals, uint32(len(nodes)))
 
-	// Verify that member names are unique within the cluster
-	ids := make([][]byte, maxSize)
-	names := make([]string, maxSize)
-	nameMap := make(map[string]uint32)
-	for i := uint32(0); i < maxSize; i++ {
-		member := cl.Members[i]
-		names[i] = member.GetName()
-		nameMap[names[i]] = i
+	//// Verify that member names are unique within the cluster
+	//ids := make([][]byte, maxSize)
+	//names := make([]string, maxSize)
+	//nameMap := make(map[string]uint32)
+	//for i := uint32(0); i < maxSize; i++ {
+	//	member := cl.Members[i]
+	//	names[i] = member.GetName()
+	//	nameMap[names[i]] = i
 
-		// collect IDs while we are at it
-		id := member.GetNodeID().Value() // returns a clone of the nodeID
-		ids[i] = id
-	}
-	// if the names are not unique, map will be smaller
-	c.Assert(maxSize, Equals, uint32(len(nameMap)))
+	//	// collect IDs while we are at it
+	//	id := member.GetNodeID().Value() // returns a clone of the nodeID
+	//	ids[i] = id
+	//}
+	//// if the names are not unique, map will be smaller
+	//c.Assert(maxSize, Equals, uint32(len(nameMap)))
 
-	// verify that the RegCluster.MembersByName index is correct
-	for i := uint32(0); i < maxSize; i++ {
-		name := names[i]
-		member := cl.MembersByName[name]
-		c.Assert(name, Equals, member.GetName())
-	}
+	//// verify that the RegCluster.MembersByName index is correct
+	//for i := uint32(0); i < maxSize; i++ {
+	//	name := names[i]
+	//	member := cl.MembersByName[name]
+	//	c.Assert(name, Equals, member.GetName())
+	//}
 
-	// verify that the RegCluster.MembersByID index is correct
-	count := uint32(0) // number of successful type assertions
-	for i := uint32(0); i < maxSize; i++ {
-		id := ids[i]
-		mbr, err := cl.MembersByID.Find(id)
-		c.Assert(err, IsNil)
-		var member *xg.MemberInfo
-		// verify that the type assertion succeeds
-		if m, ok := mbr.(*xg.MemberInfo); ok {
-			member = m
-			mID := member.GetNodeID().Value()
-			c.Assert(len(id), Equals, len(mID))
-			for j := uint(0); j < uint(len(id)); j++ {
-				c.Assert(id[j], Equals, mID[j])
-			}
-			count++
-		}
-	}
-	c.Assert(maxSize, Equals, count)
+	//// verify that the RegCluster.MembersByID index is correct
+	//count := uint32(0) // number of successful type assertions
+	//for i := uint32(0); i < maxSize; i++ {
+	//	id := ids[i]
+	//	mbr, err := cl.MembersByID.Find(id)
+	//	c.Assert(err, IsNil)
+	//	var member *xg.MemberInfo
+	//	// verify that the type assertion succeeds
+	//	if m, ok := mbr.(*xg.MemberInfo); ok {
+	//		member = m
+	//		mID := member.GetNodeID().Value()
+	//		c.Assert(len(id), Equals, len(mID))
+	//		for j := uint(0); j < uint(len(id)); j++ {
+	//			c.Assert(id[j], Equals, mID[j])
+	//		}
+	//		count++
+	//	}
+	//}
+	//c.Assert(maxSize, Equals, count)
 
 	/////////////////////////////////////////////////////////////////
 	// C: Each tcNode initiates xlReg cycle, at end of which N-1 peers
@@ -141,6 +137,7 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 	// XXX STUB
 
 }
+
 //func (s *XLSuite) TestClusterSerialization(c *C) {
 //	if VERBOSITY > 0 {
 //		fmt.Println("TEST_CLUSTER_SERIALIZATION")
