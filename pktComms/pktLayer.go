@@ -28,8 +28,6 @@ var _ = fmt.Print
 
 type PktLayer struct {
 	Cnx    *xt.TcpConnection
-	DoneCh chan bool
-	Err    error
 	xg.MemberNode
 }
 
@@ -48,8 +46,8 @@ func NewPktLayer(
 		clusterName, clusterAttrs, clusterID, size, epCount, e)
 
 	if err == nil {
+		mn.DoneCh = make(chan bool)
 		pl = &PktLayer{
-			DoneCh:     make(chan bool),
 			MemberNode: *mn,
 		}
 	}
@@ -58,8 +56,6 @@ func NewPktLayer(
 }
 
 // Join the cluster and get the members list.
-// XXX MODIFY to pass doneCh and reply on it, true meaning OK,
-//     false meaning there is an error
 func (pl *PktLayer) JoinCluster() {
 
 	mn := &pl.MemberNode
@@ -76,17 +72,16 @@ func (pl *PktLayer) JoinCluster() {
 		if err == nil {
 			err = mn.JoinAndReply()
 			if err == nil {
-				err = mn.GetAndMembers()
-				// DEBUG
-				fmt.Printf("cluster joined")
-				// END
+				err = mn.GetAndMembers()	// XXX PANICS
 			}
 		}
 	}
-	if err != nil {
+	if err == nil {
+		pl.DoneCh <- true
+	} else {
 		pl.Err = err
+		pl.DoneCh <- false
 	}
-
 }
 
 // Start the PktLayer running in separate goroutine, so that this function
@@ -95,7 +90,7 @@ func (pl *PktLayer) JoinCluster() {
 func (pl *PktLayer) Run() {
 
 	mn := &pl.MemberNode
-	pl.JoinCluster() // XXX SHOULD NOT BE HERE
+	// pl.JoinCluster() // XXX SHOULD NOT BE HERE
 
 	go func() {
 		var err error

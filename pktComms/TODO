@@ -1,5 +1,15 @@
 paxos_go/pktComms/TODO
 
+2014-09-16
+    * FIX panic in helloGoodBye_test.go
+    * pktLayer.JoinCluster() should signal on pktLayer.DoneCh when
+        done, sending false if pktLayer.Err != nil
+        - hmmm, that's unsafe; make DoneCh a chan(error)
+    * pktLayer.HelloToPeers() handled the same way
+    * pktLayer.KeepAlives() 
+    * pktLayer.Switch()
+    * pktLayer.SendByes()
+
 2014-09-15
     * helloGoodbye_test.go spins up K nodes; each says hello to its
         K-1 peers, pause, then send Bye to peers and shuts down

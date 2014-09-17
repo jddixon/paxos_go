@@ -82,6 +82,7 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 	fmt.Printf("anID      %s\n", anID.String())
 	fmt.Printf("clusterID %s\n", an.ClusterID.String())
 	fmt.Printf("  size    %d\n", an.ClusterSize)
+	fmt.Printf("  name    %s\n", an.ClusterName)
 	// END
 
 	found, err := reg.ContainsID(regID)

@@ -31,13 +31,30 @@ func (s *XLSuite) TestHelloGoodbye(c *C) {
 
 	_, _ = pL, pLNames // XXX not yet used
 
-	// XXX This is a hack: we should wait until all have joined, then
-	// wait till all have said hello, then wait until all have said
-	// Bye.  There is a DoneCh in MemberNode.
-
-	// 4  Start the K clients running, each in a separate goroutine
+	// 4  Start the K clients running, each in a separate goroutine.
 	for i := uint32(0); i < K; i++ {
-		pL[i].Run()
+		go pL[i].JoinCluster()
 	}
+	for i := uint32(0); i < K; i++ {
+		ok := <- pL[i].DoneCh
+		// DEBUG
+		fmt.Printf("member %d, %-8s,  has joined ", i, pLNames[i])
+		if ok {
+			fmt.Println("successfully")
+		} else {
+			// XXX Using pL.Err will cause timing problems
+			fmt.Printf("but returned an error %s\n", pL[i].Err)
+		}
+		// END
+	}
+
+	// 5  Tell all to say Hello; wait.
+
+	// 6  Tell all to say Byte; wait.
+
+
+	// 7  We are done.
+
+
 
 }
