@@ -60,3 +60,55 @@ func NewInCnxMgr(node *xn.Node, cnx *xt.TcpConnection) (
 	}
 	return
 }
+
+type InListener struct {
+	Acc    *xt.TcpAcceptor
+	MyNode *xn.Node
+}
+
+// XXX This should have an InCnxMgr factory as an argument.
+func NewInListener(node *xn.Node, acc *xt.TcpAcceptor) (
+	inL *InListener, err error) {
+
+	if node == nil {
+		err = NilNode
+	} else if acc == nil {
+		err = UnusableTcpAcceptor
+	} else {
+		inL = &InListener{
+			Acc:    acc,
+			MyNode: node,
+		}
+	}
+	return
+}
+
+// XXX A mistake ...
+func (inL *InListener) Accept() (icm *InCnxMgr, err error) {
+	conn, err := inL.Acc.Accept()
+	if err == nil {
+		if conn == nil {
+			err = NilCnx
+		}
+		cnx := conn.(*xt.TcpConnection)
+		icm, err = NewInCnxMgr(inL.MyNode, cnx)
+	}
+	return
+}
+
+func (inL *InListener) Run() {
+
+	// Listen on Acc.  If someone opens a connection, create an inQMgr
+	// and run it in a separate goroutine.
+
+	// We could keep a slice of connections opened.  This would not be a
+	// good idea if there were to be many such connections.
+
+}
+
+func (inL *InListener) Close() (err error) {
+	if inL.Acc != nil {
+		inL.Acc.Close()
+	}
+	return // XXX err not changed
+}

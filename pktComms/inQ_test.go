@@ -11,7 +11,7 @@ import (
 	. "gopkg.in/check.v1"
 )
 
-func (s *XlSuite) dummyPeer(c *C, acc *xt.TcpAcceptor) {
+func (s *XLSuite) dummyPeer(c *C, acc *xt.TcpAcceptor) {
 
 	// open a connection to the listening socket, then send it some
 	// number (15?) of KeepAlive packets, expecting an Ack for each
@@ -44,10 +44,56 @@ func (s *XLSuite) TestInQ(c *C) {
 	c.Assert(acc, NotNil)
 	defer acc.Close()
 
-	// XXX INCORRECTLY SPECIFIED
-
-	mgr, err := NewInCnxMgr(node, acc)
+	inL, err := NewInListener(node, acc)
 	c.Assert(err, IsNil)
-	c.Assert(mgr, NotNil)
+	c.Assert(inL, NotNil)
+	c.Assert(inL.Acc, DeepEquals, acc)
+	c.Assert(inL.MyNode, DeepEquals, node)
+}
+func (s *XLSuite) TestInMain(c *C) {
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_IN_MAIN")
+	}
+
+	rng := xr.MakeSimpleRNG()
+
+	nodeName := rng.NextFileName(8)
+	lfs := rng.NextFileName(8)
+	id, err := xi.New(nil)
+	c.Assert(err, IsNil)
+	c.Assert(id, NotNil)
+
+	node, err := xn.NewNew(nodeName, id, lfs)
+	c.Assert(err, IsNil)
+	c.Assert(node, NotNil)
+
+	// create an acceptor, a listening socket, on a random localhost port
+	acc, err := xt.NewTcpAcceptor("127.0.0.1:0")
+	c.Assert(err, IsNil)
+	c.Assert(acc, NotNil)
+	defer acc.Close()
+
+	inL, err := NewInListener(node, acc)
+	c.Assert(err, IsNil)
+	c.Assert(inL, NotNil)
+
+	// Create a cluster of K nodes for test purposes.
+
+	// run the listener in a separate goroutine.  This will spawn an
+	// inQMgr for each connection.  Each inQMgr simulates a peer in the
+	// cluster; we don't simulate peer SelfIndex
+
+	// go inL.Run()
+
+	// Opens K-1 connections to listener inL.
+	// Each such connection is passed to an InQDriver(cnx) which does
+	//   Hello/Ack
+	//   N * KeepAlive/Ack, where X = say 15
+	//   Bye/Ack
+
+	// The node in InListener is the SelfIndex node.
+
+	// There is then an InQDriver for each of the other K-1 nodes in
+	// the cluster.
 
 }
