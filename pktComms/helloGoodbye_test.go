@@ -36,7 +36,7 @@ func (s *XLSuite) TestHelloGoodbye(c *C) {
 		go pL[i].JoinCluster()
 	}
 	for i := uint32(0); i < K; i++ {
-		ok := <- pL[i].DoneCh
+		ok := <-pL[i].DoneCh
 		// DEBUG
 		fmt.Printf("member %d, %-8s,  has joined ", i, pLNames[i])
 		if ok {
@@ -52,9 +52,6 @@ func (s *XLSuite) TestHelloGoodbye(c *C) {
 
 	// 6  Tell all to say Byte; wait.
 
-
 	// 7  We are done.
-
-
 
 }

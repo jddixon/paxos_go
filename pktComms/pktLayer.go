@@ -8,6 +8,7 @@ import (
 	xi "github.com/jddixon/xlNodeID_go"
 	xg "github.com/jddixon/xlReg_go"
 	xt "github.com/jddixon/xlTransport_go"
+	"sync"
 )
 
 var _ = fmt.Print
@@ -27,7 +28,8 @@ var _ = fmt.Print
 // regenerating keys, etc.
 
 type PktLayer struct {
-	Cnx    *xt.TcpConnection
+	Cnx *xt.TcpConnection
+	mu  sync.RWMutex
 	xg.MemberNode
 }
 
@@ -72,7 +74,7 @@ func (pl *PktLayer) JoinCluster() {
 		if err == nil {
 			err = mn.JoinAndReply()
 			if err == nil {
-				err = mn.GetAndMembers()	// XXX PANICS
+				err = mn.GetAndMembers() // XXX PANICS
 			}
 		}
 	}

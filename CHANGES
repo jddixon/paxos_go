@@ -1,5 +1,8 @@
 paxos_go/CHANGES
 
+v0.2.0
+    2014-09-18
+        * some pktComms code, skeletal inQ_test.go                  SLOC  741
 v0.1.0
     2014-08-31
         * skeletal version                                          SLOC   13
