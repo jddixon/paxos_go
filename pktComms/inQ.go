@@ -66,7 +66,7 @@ type InListener struct {
 	MyNode *xn.Node
 }
 
-// XXX This should have an InCnxMgr factory as an argument.
+// XXX This should have an InCnxMgr = CnxListener factory as an argument.
 func NewInListener(node *xn.Node, acc *xt.TcpAcceptor) (
 	inL *InListener, err error) {
 

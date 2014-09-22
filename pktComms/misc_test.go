@@ -3,22 +3,39 @@ package pktComms
 // paxos_go/pktComms/misc_test.go
 
 import (
-	//"crypto/rand"
-	//"crypto/rsa"
-	//"encoding/hex"
 	"fmt"
 	xr "github.com/jddixon/rnglib_go"
 	xi "github.com/jddixon/xlNodeID_go"
-	//xn "github.com/jddixon/xlNode_go"
 	xg "github.com/jddixon/xlReg_go"
 	xt "github.com/jddixon/xlTransport_go"
 	. "gopkg.in/check.v1"
-	//"strings"
+	"os"
+	"path"
 )
 
 const (
 	VERBOSITY = 1
 )
+
+func (s *XLSuite) makeUniqueLFS(c *C, rng *xr.PRNG) (lfs string, err error) {
+
+	// first make sure that tmp/ exists and is a directory
+	tmpDir := "tmp"
+	if _, err := os.Stat(tmpDir); os.IsNotExist(err) {
+		err = os.Mkdir(tmpDir, 0664)
+	}
+	if err == nil {
+		for {
+			lfs = path.Join(tmpDir, rng.NextFileName(8))
+			if _, err = os.Stat(lfs); os.IsNotExist(err) {
+				// lfs does not exist, so we are done
+				err = nil
+				break
+			}
+		}
+	}
+	return
+}
 
 // Create and start an ephemeral xlReg server -----------------------
 // Calling routine should call defer eph.Close()

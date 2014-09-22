@@ -36,14 +36,14 @@ func (s *XLSuite) TestHelloGoodbye(c *C) {
 		go pL[i].JoinCluster()
 	}
 	for i := uint32(0); i < K; i++ {
-		ok := <-pL[i].DoneCh
+		err := <-pL[i].DoneCh
 		// DEBUG
 		fmt.Printf("member %d, %-8s,  has joined ", i, pLNames[i])
-		if ok {
+		if err == nil {
 			fmt.Println("successfully")
 		} else {
 			// XXX Using pL.Err will cause timing problems
-			fmt.Printf("but returned an error %s\n", pL[i].Err)
+			fmt.Printf("but returned an error %s\n", err)
 		}
 		// END
 	}

@@ -34,3 +34,5 @@ type OutCnxMgr struct {
 	mu     sync.RWMutex
 	State  uint
 }
+
+// CnxTalker a useful abstraction ?  CnxTalkerFactory?

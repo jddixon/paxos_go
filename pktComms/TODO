@@ -1,11 +1,14 @@
 paxos_go/pktComms/TODO
 
+2014-09-20
+    * PktLayer.Run() morphs into HelloToPeers
+
 2014-09-16
-    * FIX panic in helloGoodBye_test.go
-    * pktLayer.JoinCluster() should signal on pktLayer.DoneCh when
-        done, sending false if pktLayer.Err != nil
-        - hmmm, that's unsafe; make DoneCh a chan(error)
-    * pktLayer.HelloToPeers() handled the same way
+    * FIX panic in helloGoodBye_test.go                                 * DONE
+    * pktLayer.JoinCluster() should signal on pktLayer.DoneCh when      * DONE
+        done, sending pktLayer.DoneCh <- err                            * DONE
+        - hmmm, that's unsafe; make DoneCh a chan(error)                * YEP
+    * pktLayer.HelloToPeers() handled like JoinCluster
     * pktLayer.KeepAlives() 
     * pktLayer.Switch()
     * pktLayer.SendByes()

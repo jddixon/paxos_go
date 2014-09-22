@@ -48,7 +48,7 @@ func NewPktLayer(
 		clusterName, clusterAttrs, clusterID, size, epCount, e)
 
 	if err == nil {
-		mn.DoneCh = make(chan bool)
+		mn.DoneCh = make(chan error)
 		pl = &PktLayer{
 			MemberNode: *mn,
 		}
@@ -78,12 +78,7 @@ func (pl *PktLayer) JoinCluster() {
 			}
 		}
 	}
-	if err == nil {
-		pl.DoneCh <- true
-	} else {
-		pl.Err = err
-		pl.DoneCh <- false
-	}
+	pl.DoneCh <- err
 }
 
 // Start the PktLayer running in separate goroutine, so that this function
@@ -92,7 +87,6 @@ func (pl *PktLayer) JoinCluster() {
 func (pl *PktLayer) Run() {
 
 	mn := &pl.MemberNode
-	// pl.JoinCluster() // XXX SHOULD NOT BE HERE
 
 	go func() {
 		var err error
@@ -117,12 +111,6 @@ func (pl *PktLayer) Run() {
 		if pl.Cnx != nil {
 			pl.Cnx.Close()
 		}
-		if err != nil {
-			mn.Err = err
-			mn.DoneCh <- false
-		} else {
-			mn.DoneCh <- true
-		}
+		mn.DoneCh <- err
 	}()
-	return
 }
