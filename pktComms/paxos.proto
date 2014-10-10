@@ -1,0 +1,45 @@
+package pktComms;
+
+message Prepare {
+    optional uint64 N           = 1;
+    
+    optional bytes  Salt        = 12;
+    optional bytes  DigSig      = 13;
+}
+
+message Promise {
+    optional uint64 N           = 1;
+    optional uint64 I           = 2;
+    optional uint64 Na          = 3;
+    optional bytes  Va          = 4;
+    
+    optional bytes  Salt        = 12;
+    optional bytes  DigSig      = 13;
+}
+
+message Nack {
+    optional uint64 N           = 1;
+    optional uint64 I           = 2;
+    optional uint64 Na          = 3;
+    
+    optional bytes  Salt        = 12;
+    optional bytes  DigSig      = 13;
+}
+
+message Accept {
+    optional uint64 N           = 1;
+    optional uint64 I           = 2;
+    optional bytes  Vn          = 3;
+    
+    optional bytes  Salt        = 12;
+    optional bytes  DigSig      = 13;
+}
+
+message Accepted {
+    optional uint64 N           = 1;
+    optional uint64 I           = 2;
+    
+    optional bytes  Salt        = 12;
+    optional bytes  DigSig      = 13;
+}
+

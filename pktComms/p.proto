@@ -1,8 +1,8 @@
 package pktComms;
 
-// Where a DigSig field is present, it must be SHA3 (Keccak 256) and it must
-// cover all other fields present in the order shown.  Messages whose DigSig
-// fields do not match the other fields must be silently discarded (but 
+// Where a DigSig field is present, it must be SHA1 (20 bytes, 160 bits) and 
+// it must cover all other fields present in the order shown.  Messages whose 
+// DigSig fields do not match the other fields must be silently discarded (but 
 // should be logged, at least during development).
 
 // Opaque contents get copied through to the consensus layer

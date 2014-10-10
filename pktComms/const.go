@@ -1,5 +1,5 @@
 package pktComms
 
 const (
-	SHA3_LEN = 32
+	SHA1_LEN = 20
 )

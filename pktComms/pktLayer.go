@@ -48,7 +48,6 @@ func NewPktLayer(
 		clusterName, clusterAttrs, clusterID, size, epCount, e)
 
 	if err == nil {
-		mn.DoneCh = make(chan error)
 		pl = &PktLayer{
 			MemberNode: *mn,
 		}

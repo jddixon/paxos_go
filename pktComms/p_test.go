@@ -25,7 +25,7 @@ func (d *XLSuite) TestPaxosPkt(c *C) {
 		mySeqN = uint64(rng.Int63())
 	}
 
-	id := rng.SomeBytes(SHA3_LEN)
+	id := rng.SomeBytes(SHA1_LEN)
 
 	seqBuf := new(bytes.Buffer)
 	binary.Write(seqBuf, binary.LittleEndian, mySeqN)
