@@ -1,5 +1,7 @@
 package pktComms;
 
+// The messages used for communicating between paxos processes.
+
 message Prepare {
     optional uint64 N           = 1;
     

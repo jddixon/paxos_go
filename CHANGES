@@ -1,5 +1,8 @@
 paxos_go/CHANGES
 
+v0.3.0
+    2014-10-12
+        * added client.proto and paxos.proto                        SLOC 1140
 v0.2.0
     2014-09-18
         * some pktComms code, skeletal inQ_test.go                  SLOC  741

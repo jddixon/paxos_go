@@ -7,8 +7,6 @@ Package pktComms is a generated protocol buffer package.
 
 It is generated from these files:
 	p.proto
-	client.proto
-	paxos.proto
 
 It has these top-level messages:
 	AppMsg

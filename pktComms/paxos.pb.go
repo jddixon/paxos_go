@@ -2,6 +2,19 @@
 // source: paxos.proto
 // DO NOT EDIT!
 
+/*
+Package pktComms is a generated protocol buffer package.
+
+It is generated from these files:
+	paxos.proto
+
+It has these top-level messages:
+	Prepare
+	Promise
+	Nack
+	Accept
+	Accepted
+*/
 package pktComms
 
 import proto "code.google.com/p/goprotobuf/proto"

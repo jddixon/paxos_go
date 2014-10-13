@@ -2,6 +2,17 @@
 // source: client.proto
 // DO NOT EDIT!
 
+/*
+Package pktComms is a generated protocol buffer package.
+
+It is generated from these files:
+	client.proto
+
+It has these top-level messages:
+	Request
+	Response
+	Redirect
+*/
 package pktComms
 
 import proto "code.google.com/p/goprotobuf/proto"
@@ -107,10 +118,13 @@ func (m *Response) GetDigSig() []byte {
 	return nil
 }
 
+// If a client sends a request to a Paxos server which is not the
+// leader, the reply is the IP address, including port number, of
+// the host that the server considers the leader.
 type Redirect struct {
 	ClientID         *uint64 `protobuf:"varint,1,opt" json:"ClientID,omitempty"`
 	RequestID        []byte  `protobuf:"bytes,2,opt" json:"RequestID,omitempty"`
-	Resp             *string `protobuf:"bytes,3,opt" json:"Resp,omitempty"`
+	LeaderIPAddr     *string `protobuf:"bytes,4,opt" json:"LeaderIPAddr,omitempty"`
 	Salt             []byte  `protobuf:"bytes,12,opt" json:"Salt,omitempty"`
 	DigSig           []byte  `protobuf:"bytes,13,opt" json:"DigSig,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -134,9 +148,9 @@ func (m *Redirect) GetRequestID() []byte {
 	return nil
 }
 
-func (m *Redirect) GetResp() string {
-	if m != nil && m.Resp != nil {
-		return *m.Resp
+func (m *Redirect) GetLeaderIPAddr() string {
+	if m != nil && m.LeaderIPAddr != nil {
+		return *m.LeaderIPAddr
 	}
 	return ""
 }
