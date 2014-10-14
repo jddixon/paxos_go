@@ -123,11 +123,13 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 //
 ///////////////////////////////////////////////////////////////////////
 // XXX epCount IS SET TO 3, WHICH IS WRONG IN GENERAL.
+//
+// XXX THIS IS NOW CREATING Bootstrappers !!
 ///////////////////////////////////////////////////////////////////////
 func (s *XLSuite) createKMemberPktLayers(c *C, rng *xr.PRNG,
 	server *xg.RegServer,
 	clusterName string, clusterAttrs uint64, clusterID *xi.NodeID,
-	K uint32) (pl []*PktLayer, plNames []string) {
+	K uint32) (pl []*Bootstrapper, plNames []string) {
 
 	serverName := server.GetName()
 	serverID := server.GetNodeID()
@@ -137,7 +139,7 @@ func (s *XLSuite) createKMemberPktLayers(c *C, rng *xr.PRNG,
 	c.Assert(serverEnd, NotNil)
 
 	var err error
-	pl = make([]*PktLayer, K)
+	pl = make([]*Bootstrapper, K)
 	plNames = make([]string, K)
 	namesInUse := make(map[string]bool)
 	for i := uint32(0); i < K; i++ {
@@ -154,7 +156,9 @@ func (s *XLSuite) createKMemberPktLayers(c *C, rng *xr.PRNG,
 		namesInUse[newName] = true
 		plNames[i] = newName // guaranteed to be LOCALLY unique
 		attrs := uint64(rng.Int63())
-		pl[i], err = NewPktLayer(plNames[i], "",
+
+		// XXX the pl[i] are actually NOT PktLayer
+		pl[i], err = NewBootstrapper(plNames[i], "",
 			nil, nil, // private RSA keys are generated if nil
 			attrs,
 			serverName, serverID, serverEnd, serverCK, serverSK,

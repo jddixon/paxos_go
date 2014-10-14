@@ -16,13 +16,13 @@ var _ = fmt.Println
 
 func (d *XLSuite) TestPaxosPkt(c *C) {
 	if VERBOSITY > 0 {
-		fmt.Println("TEST_PAXOS_PKT")
+		fmt.Println("\nTEST_PAXOS_PKT")
 	}
 
 	rng := xr.MakeSimpleRNG()
 
 	mySeqN := uint64(rng.Int63())
-	for mySeqN == 0 { // may not be zero
+	for mySeqN == 0 { // must not be zero
 		mySeqN = uint64(rng.Int63())
 	}
 
@@ -66,6 +66,7 @@ func (d *XLSuite) TestPaxosPkt(c *C) {
 	d.compareByteSlices(c, digSigFound, hash)
 }
 
+// XXX The same as bytes.Equal()
 func (d *XLSuite) compareByteSlices(c *C, a []byte, b []byte) {
 	c.Assert(len(a), Equals, len(b))
 	for i := 0; i < len(b); i++ {

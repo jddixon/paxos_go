@@ -9,11 +9,11 @@ import (
 	. "gopkg.in/check.v1"
 )
 
-// Launch K servers, have them say hello to one another, pause, then
-// have them say goodbye.
+// Launch K Paxos cluster members, have them say hello to one another, pause, 
+// then have them say goodbye.
 func (s *XLSuite) TestHelloGoodbye(c *C) {
 	if VERBOSITY > 0 {
-		fmt.Println("TEST_HELLO_GOODBYE")
+		fmt.Println("\nTEST_HELLO_GOODBYE")
 	}
 	rng := xr.MakeSimpleRNG()
 
@@ -29,8 +29,6 @@ func (s *XLSuite) TestHelloGoodbye(c *C) {
 	pL, pLNames := s.createKMemberPktLayers(c, rng, server,
 		clusterName, clusterAttrs, clusterID, K)
 
-	_, _ = pL, pLNames // XXX not yet used
-
 	// 4  Start the K clients running, each in a separate goroutine.
 	for i := uint32(0); i < K; i++ {
 		go pL[i].JoinCluster()
@@ -42,7 +40,6 @@ func (s *XLSuite) TestHelloGoodbye(c *C) {
 		if err == nil {
 			fmt.Println("successfully")
 		} else {
-			// XXX Using pL.Err will cause timing problems
 			fmt.Printf("but returned an error %s\n", err)
 		}
 		// END
@@ -50,7 +47,7 @@ func (s *XLSuite) TestHelloGoodbye(c *C) {
 
 	// 5  Tell all to say Hello; wait.
 
-	// 6  Tell all to say Byte; wait.
+	// 6  Tell all to say Bye; wait.
 
 	// 7  We are done.
 

@@ -19,7 +19,7 @@ func (s *XLSuite) dummyPeer(c *C, acc *xt.TcpAcceptor) {
 }
 func (s *XLSuite) TestInQ(c *C) {
 	if VERBOSITY > 0 {
-		fmt.Println("TEST_IN_Q")
+		fmt.Println("\nTEST_IN_Q")
 	}
 
 	rng := xr.MakeSimpleRNG()
@@ -55,7 +55,7 @@ func (s *XLSuite) TestInQ(c *C) {
 }
 func (s *XLSuite) TestInMain(c *C) {
 	if VERBOSITY > 0 {
-		fmt.Println("TEST_IN_MAIN")
+		fmt.Println("\nTEST_IN_MAIN")
 	}
 
 	rng := xr.MakeSimpleRNG()
@@ -88,7 +88,7 @@ func (s *XLSuite) TestInMain(c *C) {
 
 	// Create a cluster of K nodes for test purposes.
 
-	// run the listener in a separate goroutine.  This will spawn an
+	// Run the listener in a separate goroutine.  This will spawn an
 	// inQMgr for each connection.  Each inQMgr simulates a peer in the
 	// cluster; we don't simulate peer SelfIndex
 

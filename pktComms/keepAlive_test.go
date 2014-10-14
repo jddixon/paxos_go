@@ -11,7 +11,7 @@ import (
 
 func (s *XLSuite) TestKeepAlives(c *C) {
 	if VERBOSITY > 0 {
-		fmt.Println("TEST_KEEP_ALIVES")
+		fmt.Println("\nTEST_KEEP_ALIVES")
 	}
 	rng := xr.MakeSimpleRNG()
 
@@ -140,7 +140,7 @@ func (s *XLSuite) TestKeepAlives(c *C) {
 
 //func (s *XLSuite) TestClusterSerialization(c *C) {
 //	if VERBOSITY > 0 {
-//		fmt.Println("TEST_CLUSTER_SERIALIZATION")
+//		fmt.Println("\nTEST_CLUSTER_SERIALIZATION")
 //	}
 //	rng := xr.MakeSimpleRNG()
 //
