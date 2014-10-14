@@ -1,14 +1,20 @@
 paxos_go/TODO
 
+2014-10-14
+    * need changes to xlReg: serialization (String()) and 
+        deserialization (ParseMemberNode()) functiona for MemberNode,
+        which is in xlReg_go/client_node.go
+    * then need de/serialization tests
+
+2014-10-14 (edited from 09-20)
+    * Bootstrap.Run() morphs into HelloToPeers
+
 2014-10-13
-    * FIX: helloGoodbye_test.go now hangs
+    * FIX: helloGoodbye_test.go now hangs                               * DONE
 
 2014-10-12
     * revise tests to use SHA1 instead of SHA3 (because we need to
         use SHA1 in digital signatures)
-
-2014-09-20
-    * PktLayer.Run() morphs into HelloToPeers
 
 2014-09-16
     * FIX panic in helloGoodBye_test.go                                 * DONE

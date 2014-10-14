@@ -3,9 +3,9 @@ package pktComms
 // paxos_go/pkt_comms/pktLayer.go
 
 import (
-	"crypto/rsa"
+	//"crypto/rsa"
 	"fmt"
-	xi "github.com/jddixon/xlNodeID_go"
+	//xi "github.com/jddixon/xlNodeID_go"
 	xg "github.com/jddixon/xlReg_go"
 	xt "github.com/jddixon/xlTransport_go"
 	"sync"
@@ -15,31 +15,33 @@ var _ = fmt.Print
 
 
 type PktLayer struct {
-	Cnx *xt.TcpConnection
+	StopCh		chan bool
+	StoppedCh	chan error
+	Cnx *xt.TcpConnection		// value?
 	mu  sync.RWMutex
-	xg.MemberNode
+	PktCommsNode
 }
 
-// XXX This is WRONG.  Main argument is *xg.MemberNode, which we get
-// by deserializing what's in LFS/.xlattice
+func NewPktLayer(o *PktLayerOptions) (pl *PktLayer, err error) {
 
-func NewPktLayer(
-	name, lfs string, ckPriv, skPriv *rsa.PrivateKey, attrs uint64,
-	serverName string, serverID *xi.NodeID, serverEnd xt.EndPointI,
-	serverCK, serverSK *rsa.PublicKey,
-	clusterName string, clusterAttrs uint64, clusterID *xi.NodeID,
-	size, epCount uint32, e []xt.EndPointI) (pl *PktLayer, err error) {
-
-	if lfs == "" {
-		attrs |= xg.ATTR_EPHEMERAL
+	if o.LFS == "" {
+		o.Attrs |= xg.ATTR_EPHEMERAL
 	}
-	mn, err := xg.NewMemberNode(name, lfs, ckPriv, skPriv, attrs,
-		serverName, serverID, serverEnd, serverCK, serverSK,
-		clusterName, clusterAttrs, clusterID, size, epCount, e)
+	// XXX HACK TO MAKE THINGS COMPILE
+	mn, err := xg.NewMemberNode(
+		o.Name, o.LFS, o.CKPriv, o.SKPriv, o.Attrs, 
+		o.ServerName, o.ServerID, o.ServerEnd, o.ServerCK, o.ServerSK,
+		o.ClusterName, o.ClusterAttrs, o.ClusterID, o.Size,
+		o.EPCount, o.EndPoints)
 
 	if err == nil {
-		pl = &PktLayer{
+		pcn := &PktCommsNode{
 			MemberNode: *mn,
+		}
+		pl = &PktLayer{
+			StopCh		: make(chan bool),
+			StoppedCh	: make(chan error),
+			PktCommsNode: *pcn,
 		}
 	}
 	return
