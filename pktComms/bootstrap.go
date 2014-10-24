@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 	xi "github.com/jddixon/xlNodeID_go"
+	xn "github.com/jddixon/xlNode_go"
 	xg "github.com/jddixon/xlReg_go"
 	xt "github.com/jddixon/xlTransport_go"
 	"sync"
@@ -29,8 +30,8 @@ var _ = fmt.Print
 
 type Bootstrapper struct {
 	DoneCh chan error
-	mu sync.RWMutex		// ever used ??? XXX
-	xg.MemberNode
+	mu     sync.RWMutex // ever used ??? XXX
+	xg.MemberMaker
 }
 
 func NewBootstrapper(
@@ -43,14 +44,20 @@ func NewBootstrapper(
 	if lfs == "" {
 		attrs |= xg.ATTR_EPHEMERAL
 	}
-	mn, err := xg.NewMemberNode(name, lfs, ckPriv, skPriv, attrs,
-		serverName, serverID, serverEnd, serverCK, serverSK,
-		clusterName, clusterAttrs, clusterID, size, epCount, e)
-
+	nodeID, err := xi.New(nil) // ie, make me a NodeID
 	if err == nil {
-		bs = &Bootstrapper{
-			DoneCh:		make(chan error),
-			MemberNode: *mn,
+		node, err := xn.NewNew(name, nodeID, lfs)
+		if err == nil {
+			mn, err := xg.NewMemberMaker(node, attrs,
+				serverName, serverID, serverEnd, serverCK, serverSK,
+				clusterName, clusterAttrs, clusterID, size, epCount, e)
+
+			if err == nil {
+				bs = &Bootstrapper{
+					DoneCh:      make(chan error),
+					MemberMaker: *mn,
+				}
+			}
 		}
 	}
 	return
@@ -60,7 +67,7 @@ func NewBootstrapper(
 // Join the cluster and get the members list.
 func (bs *Bootstrapper) JoinCluster() {
 
-	mn := &bs.MemberNode
+	mn := &bs.MemberMaker
 	var (
 		err      error
 		version1 uint32
@@ -79,7 +86,7 @@ func (bs *Bootstrapper) JoinCluster() {
 		}
 	}
 	// DEBUG
-	fmt.Printf("JoinCluster for %s done, returning %v\n", 
+	fmt.Printf("JoinCluster for %s done, returning %v\n",
 		bs.GetName(), err)
 	// END
 	bs.DoneCh <- err
@@ -90,7 +97,7 @@ func (bs *Bootstrapper) JoinCluster() {
 
 func (bs *Bootstrapper) Run() {
 
-	mn := &bs.MemberNode
+	mn := &bs.MemberMaker
 
 	go func() {
 		var err error

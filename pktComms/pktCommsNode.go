@@ -7,5 +7,5 @@ import (
 )
 
 type PktCommsNode struct {
-	xg.MemberNode
+	xg.MemberMaker
 }

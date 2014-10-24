@@ -9,7 +9,7 @@ import (
 	. "gopkg.in/check.v1"
 )
 
-// Launch K Paxos cluster members, have them say hello to one another, pause, 
+// Launch K Paxos cluster members, have them say hello to one another, pause,
 // then have them say goodbye.
 func (s *XLSuite) TestHelloGoodbye(c *C) {
 	if VERBOSITY > 0 {

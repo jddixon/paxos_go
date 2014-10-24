@@ -5,7 +5,8 @@ package pktComms
 import (
 	//"crypto/rsa"
 	"fmt"
-	//xi "github.com/jddixon/xlNodeID_go"
+	xi "github.com/jddixon/xlNodeID_go"
+	xn "github.com/jddixon/xlNode_go"
 	xg "github.com/jddixon/xlReg_go"
 	xt "github.com/jddixon/xlTransport_go"
 	"sync"
@@ -13,12 +14,11 @@ import (
 
 var _ = fmt.Print
 
-
 type PktLayer struct {
-	StopCh		chan bool
-	StoppedCh	chan error
-	Cnx *xt.TcpConnection		// value?
-	mu  sync.RWMutex
+	StopCh    chan bool
+	StoppedCh chan error
+	Cnx       *xt.TcpConnection // value?
+	mu        sync.RWMutex
 	PktCommsNode
 }
 
@@ -27,21 +27,29 @@ func NewPktLayer(o *PktLayerOptions) (pl *PktLayer, err error) {
 	if o.LFS == "" {
 		o.Attrs |= xg.ATTR_EPHEMERAL
 	}
-	// XXX HACK TO MAKE THINGS COMPILE
-	mn, err := xg.NewMemberNode(
-		o.Name, o.LFS, o.CKPriv, o.SKPriv, o.Attrs, 
-		o.ServerName, o.ServerID, o.ServerEnd, o.ServerCK, o.ServerSK,
-		o.ClusterName, o.ClusterAttrs, o.ClusterID, o.Size,
-		o.EPCount, o.EndPoints)
-
+	// XXX HACKS TO MAKE THINGS COMPILE
+	nodeID, err := xi.New(nil)
 	if err == nil {
-		pcn := &PktCommsNode{
-			MemberNode: *mn,
-		}
-		pl = &PktLayer{
-			StopCh		: make(chan bool),
-			StoppedCh	: make(chan error),
-			PktCommsNode: *pcn,
+		var node *xn.Node
+		node, err = xn.New(o.Name, nodeID, o.LFS,
+			o.CKPriv, o.SKPriv, nil, nil, nil)
+		if err == nil {
+
+			mn, err := xg.NewMemberMaker( node, o.Attrs,
+				o.ServerName, o.ServerID, o.ServerEnd, o.ServerCK, o.ServerSK,
+				o.ClusterName, o.ClusterAttrs, o.ClusterID, o.Size,
+				o.EPCount, o.EndPoints)
+
+			if err == nil {
+				pcn := &PktCommsNode{
+					MemberMaker: *mn,
+				}
+				pl = &PktLayer{
+					StopCh:       make(chan bool),
+					StoppedCh:    make(chan error),
+					PktCommsNode: *pcn,
+				}
+			}
 		}
 	}
 	return
@@ -53,7 +61,7 @@ func NewPktLayer(o *PktLayerOptions) (pl *PktLayer, err error) {
 
 func (pl *PktLayer) Run() {
 
-	mn := &pl.MemberNode
+	mn := &pl.MemberMaker
 
 	go func() {
 		var err error

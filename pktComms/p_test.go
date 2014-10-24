@@ -6,8 +6,8 @@ import (
 	"code.google.com/p/goprotobuf/proto"
 	"encoding/binary"
 	"fmt"
-	xc "github.com/jddixon/xlCrypto_go"
 	xr "github.com/jddixon/rnglib_go"
+	xc "github.com/jddixon/xlCrypto_go"
 	. "gopkg.in/check.v1"
 )
 

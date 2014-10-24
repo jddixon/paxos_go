@@ -14,21 +14,21 @@ var _ = fmt.Print
 
 // Use this and then null it to encourage GC.
 type PktLayerOptions struct {
-	Rebooting bool
-	Name string
-	LFS string 
-	CKPriv *rsa.PrivateKey
-	SKPriv *rsa.PrivateKey
-	Attrs uint64
-	ServerName string
-	ServerID *xi.NodeID
-	ServerEnd xt.EndPointI
-	ServerCK *rsa.PublicKey
-	ServerSK *rsa.PublicKey
-	ClusterName string
+	Rebooting    bool
+	Name         string
+	LFS          string
+	CKPriv       *rsa.PrivateKey
+	SKPriv       *rsa.PrivateKey
+	Attrs        uint64
+	ServerName   string
+	ServerID     *xi.NodeID
+	ServerEnd    xt.EndPointI
+	ServerCK     *rsa.PublicKey
+	ServerSK     *rsa.PublicKey
+	ClusterName  string
 	ClusterAttrs uint64
-	ClusterID *xi.NodeID
-	Size uint32
-	EPCount uint32
-	EndPoints []xt.EndPointI
+	ClusterID    *xi.NodeID
+	Size         uint32
+	EPCount      uint32
+	EndPoints    []xt.EndPointI
 }

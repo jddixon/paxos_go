@@ -89,10 +89,10 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 	<-an.DoneCh
 
 	c.Assert(an.ClusterID, NotNil)          // the purpose of the exercise
-	c.Assert(an.EpCount, Equals, uint32(3)) // NEED >= 2
+	c.Assert(an.EPCount, Equals, uint32(3)) // NEED >= 2
 	c.Assert(an.ClusterSize, Equals, K)
 
-	anID := an.MemberID
+	anID := an.GetNodeID()
 	c.Assert(reg.IDCount(), Equals, uint(3)) // regID + anID + clusterID
 	clusterID = an.ClusterID
 
