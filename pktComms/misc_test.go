@@ -80,8 +80,8 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 	clusterAttrs = uint64(rng.Int63())
 	K = uint32(2 + rng.Intn(6)) // so the size is 2 .. 7
 
-	// create an AdminMember, use it to get the clusterID --------
-	an, err := xg.NewAdminMember(serverName, serverID, serverEnd,
+	// create an AdminClient, use it to get the clusterID --------
+	an, err := xg.NewAdminClient(serverName, serverID, serverEnd,
 		serverCK, serverSK, clusterName, clusterAttrs, K, uint32(3), nil)
 	c.Assert(err, IsNil)
 

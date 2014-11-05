@@ -1,8 +1,8 @@
 paxos_go/CHANGES
 
 v0.3.1
-    2014-10-24
-        * fixes due to changes in xlReg API                         SLOC 1250
+    2014-11-04
+        * fixes due to changes in xlReg API                         SLOC 1234
 v0.3.0
     2014-10-12
         * added client.proto and paxos.proto                        SLOC 1140

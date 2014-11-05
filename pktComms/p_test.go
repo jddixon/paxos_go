@@ -2,8 +2,9 @@ package pktComms
 
 import (
 	"bytes"
-	"code.google.com/p/go.crypto/sha3"
+	//"code.google.com/p/go.crypto/sha3"
 	"code.google.com/p/goprotobuf/proto"
+	"crypto/sha1"
 	"encoding/binary"
 	"fmt"
 	xr "github.com/jddixon/rnglib_go"
@@ -35,7 +36,7 @@ func (d *XLSuite) TestPaxosPkt(c *C) {
 	msg := rng.SomeBytes(msgLen) // fill with rubbish
 	salt := rng.SomeBytes(8)     // still more rubbish
 
-	digest := sha3.NewKeccak256()
+	digest := sha1.New()
 	digest.Write(id)
 	digest.Write(seqBuf.Bytes())
 	digest.Write(msg)
