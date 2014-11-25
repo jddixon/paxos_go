@@ -35,11 +35,18 @@ type Bootstrapper struct {
 }
 
 func NewBootstrapper(
+	// properties of the prospective cluster member
 	name, lfs string, ckPriv, skPriv *rsa.PrivateKey, attrs uint64,
+	// reg server properties
 	serverName string, serverID *xi.NodeID, serverEnd xt.EndPointI,
 	serverCK, serverSK *rsa.PublicKey,
+	// cluster attributes
 	clusterName string, clusterAttrs uint64, clusterID *xi.NodeID,
 	size, epCount uint32, e []xt.EndPointI) (bs *Bootstrapper, err error) {
+
+	// DEBUG
+	fmt.Printf("NewBootstrapper: name '%s', lfs '%s'\n", name, lfs)
+	// END
 
 	if lfs == "" {
 		attrs |= xg.ATTR_EPHEMERAL
@@ -81,7 +88,7 @@ func (bs *Bootstrapper) JoinCluster() {
 		if err == nil {
 			err = mn.JoinAndReply()
 			if err == nil {
-				err = mn.GetAndMembers() // XXX PANICS
+				err = mn.GetAndMembers()
 			}
 		}
 	}
@@ -92,10 +99,10 @@ func (bs *Bootstrapper) JoinCluster() {
 	bs.DoneCh <- err
 }
 
-// Start the PktLayer running in separate goroutine, so that this function
+// Start the bootstrapper running in separate goroutine, so that this function
 // is non-blocking.
 
-func (bs *Bootstrapper) Run() {
+func (bs *Bootstrapper) Start() {
 
 	mn := &bs.MemberMaker
 
@@ -110,7 +117,7 @@ func (bs *Bootstrapper) Run() {
 			}
 		}
 		if len(nilMembers) > 0 {
-			fmt.Printf("PktLayer.Run() after Get finds nil members: %v\n",
+			fmt.Printf("Bootstrapper.Run() after Get finds nil members: %v\n",
 				nilMembers)
 		}
 		// END --------------------------------------------

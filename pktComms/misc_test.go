@@ -49,7 +49,7 @@ func (s *XLSuite) launchEphServer(c *C) (eph *xg.EphServer,
 	server = eph.Server
 
 	// start the ephemeral server -------------------------
-	err = eph.Run()
+	err = eph.Start()
 	c.Assert(err, IsNil)
 
 	// verify Bloom filter is running
@@ -85,12 +85,12 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 		serverCK, serverSK, clusterName, clusterAttrs, K, uint32(3), nil)
 	c.Assert(err, IsNil)
 
-	an.Run()
+	an.Start()
 	<-an.DoneCh
 
 	c.Assert(an.ClusterID, NotNil)          // the purpose of the exercise
 	c.Assert(an.EPCount, Equals, uint32(3)) // NEED >= 2
-	c.Assert(an.ClusterSize, Equals, K)
+	c.Assert(an.ClusterMaxSize, Equals, K)
 
 	anID := an.GetNodeID()
 	c.Assert(reg.IDCount(), Equals, uint(3)) // regID + anID + clusterID
@@ -100,7 +100,7 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 	fmt.Printf("regID     %s\n", regID.String())
 	fmt.Printf("anID      %s\n", anID.String())
 	fmt.Printf("clusterID %s\n", an.ClusterID.String())
-	fmt.Printf("  size    %d\n", an.ClusterSize)
+	fmt.Printf("  size    %d\n", an.ClusterMaxSize)
 	fmt.Printf("  name    %s\n", an.ClusterName)
 	// END
 
@@ -129,7 +129,7 @@ func (s *XLSuite) createAndRegSoloCluster(c *C, rng *xr.PRNG,
 func (s *XLSuite) createKMemberPktLayers(c *C, rng *xr.PRNG,
 	server *xg.RegServer,
 	clusterName string, clusterAttrs uint64, clusterID *xi.NodeID,
-	K uint32) (pl []*Bootstrapper, plNames []string) {
+	K uint32) (bs []*Bootstrapper, bsNames []string) {
 
 	serverName := server.GetName()
 	serverID := server.GetNodeID()
@@ -139,8 +139,8 @@ func (s *XLSuite) createKMemberPktLayers(c *C, rng *xr.PRNG,
 	c.Assert(serverEnd, NotNil)
 
 	var err error
-	pl = make([]*Bootstrapper, K)
-	plNames = make([]string, K)
+	bs = make([]*Bootstrapper, K)
+	bsNames = make([]string, K)
 	namesInUse := make(map[string]bool)
 	for i := uint32(0); i < K; i++ {
 		var ep *xt.TcpEndPoint
@@ -154,19 +154,19 @@ func (s *XLSuite) createKMemberPktLayers(c *C, rng *xr.PRNG,
 			_, ok = namesInUse[newName]
 		}
 		namesInUse[newName] = true
-		plNames[i] = newName // guaranteed to be LOCALLY unique
+		bsNames[i] = newName // guaranteed to be LOCALLY unique
 		attrs := uint64(rng.Int63())
 
-		// XXX the pl[i] are actually NOT PktLayer
-		pl[i], err = NewBootstrapper(plNames[i], "",
+		// XXX the bs[i] are actually NOT PktLayer
+		bs[i], err = NewBootstrapper(bsNames[i], "",
 			nil, nil, // private RSA keys are generated if nil
 			attrs,
 			serverName, serverID, serverEnd, serverCK, serverSK,
 			clusterName, clusterAttrs, clusterID,
 			K, uint32(3), e) //3 is endPoint count
 		c.Assert(err, IsNil)
-		c.Assert(pl[i], NotNil)
-		c.Assert(pl[i].ClusterID, NotNil)
+		c.Assert(bs[i], NotNil)
+		c.Assert(bs[i].ClusterID, NotNil)
 	}
 	return
 }

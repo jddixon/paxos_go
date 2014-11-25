@@ -22,17 +22,21 @@ func (s *XLSuite) TestHelloGoodbye(c *C) {
 	defer eph.Close()
 
 	// 2. Create a random cluster name and size; register it --------
+	fmt.Printf("TestHelloGoodbye 2\n")
 	clusterName, clusterAttrs, clusterID, K := s.createAndRegSoloCluster(
 		c, rng, reg, regID, server)
 
 	// 3  Create K cluster member PktLayers
+	fmt.Printf("TestHelloGoodbye 3\n")
 	pL, pLNames := s.createKMemberPktLayers(c, rng, server,
 		clusterName, clusterAttrs, clusterID, K)
 
 	// 4  Start the K clients running, each in a separate goroutine.
+	fmt.Printf("TestHelloGoodbye 4a\n")
 	for i := uint32(0); i < K; i++ {
 		go pL[i].JoinCluster()
 	}
+	fmt.Printf("TestHelloGoodbye 4b\n")
 	for i := uint32(0); i < K; i++ {
 		err := <-pL[i].DoneCh
 		// DEBUG

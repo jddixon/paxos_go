@@ -3,53 +3,47 @@ package pktComms
 // paxos_go/pkt_comms/pktLayer.go
 
 import (
-	//"crypto/rsa"
 	"fmt"
-	xi "github.com/jddixon/xlNodeID_go"
-	xn "github.com/jddixon/xlNode_go"
+	xcl "github.com/jddixon/xlCluster_go"
+	//xi "github.com/jddixon/xlNodeID_go"
+	//xn "github.com/jddixon/xlNode_go"
 	xg "github.com/jddixon/xlReg_go"
-	xt "github.com/jddixon/xlTransport_go"
+	//xt "github.com/jddixon/xlTransport_go"
 	"sync"
 )
 
 var _ = fmt.Print
 
 type PktLayer struct {
+	DoneCh chan error
+	// VALUE?
 	StopCh    chan bool
 	StoppedCh chan error
-	Cnx       *xt.TcpConnection // value?
-	mu        sync.RWMutex
+	// END VALUE?
+	Running bool
+	Mu      sync.RWMutex
 	PktCommsNode
 }
 
-func NewPktLayer(o *PktLayerOptions) (pl *PktLayer, err error) {
+func NewPktLayer(cm *xcl.ClusterMember) (pl *PktLayer, err error) {
 
-	if o.LFS == "" {
-		o.Attrs |= xg.ATTR_EPHEMERAL
-	}
-	// XXX HACKS TO MAKE THINGS COMPILE
-	nodeID, err := xi.New(nil)
-	if err == nil {
-		var node *xn.Node
-		node, err = xn.New(o.Name, nodeID, o.LFS,
-			o.CKPriv, o.SKPriv, nil, nil, nil)
-		if err == nil {
-
-			mn, err := xg.NewMemberMaker( node, o.Attrs,
-				o.ServerName, o.ServerID, o.ServerEnd, o.ServerCK, o.ServerSK,
-				o.ClusterName, o.ClusterAttrs, o.ClusterID, o.Size,
-				o.EPCount, o.EndPoints)
-
-			if err == nil {
-				pcn := &PktCommsNode{
-					MemberMaker: *mn,
-				}
-				pl = &PktLayer{
-					StopCh:       make(chan bool),
-					StoppedCh:    make(chan error),
-					PktCommsNode: *pcn,
-				}
-			}
+	if cm == nil {
+		err = NilClusterMember
+	} else {
+		lfs := cm.GetLFS()
+		if lfs == "" {
+			cm.Attrs |= xg.ATTR_EPHEMERAL
+		}
+		pcn := &PktCommsNode{
+			ClusterMember: *cm,
+		}
+		pl = &PktLayer{
+			DoneCh: make(chan error),
+			// VALUE?
+			StopCh:    make(chan bool),
+			StoppedCh: make(chan error),
+			// END VALUE?
+			PktCommsNode: *pcn,
 		}
 	}
 	return
@@ -59,33 +53,35 @@ func NewPktLayer(o *PktLayerOptions) (pl *PktLayer, err error) {
 // Start the PktLayer running in separate goroutine, so that this function
 // is non-blocking.
 
-func (pl *PktLayer) Run() {
+func (pl *PktLayer) Start() {
 
-	mn := &pl.MemberMaker
+	cl := &pl.ClusterMember
+	err := cl.Run()
 
-	go func() {
-		var err error
+	if err == nil {
+		go func() {
+			var err error
 
-		// DEBUG ------------------------------------------
-		var nilMembers []int
-		for i := 0; i < len(pl.Members); i++ {
-			if pl.Members[i] == nil {
-				nilMembers = append(nilMembers, i)
+			// DEBUG ------------------------------------------
+			var nilMembers []int
+			for i := 0; i < len(pl.Members); i++ {
+				if pl.Members[i] == nil {
+					nilMembers = append(nilMembers, i)
+				}
 			}
-		}
-		if len(nilMembers) > 0 {
-			fmt.Printf("PktLayer.Run() after Get finds nil members: %v\n",
-				nilMembers)
-		}
-		// END --------------------------------------------
-		if err == nil {
-			err = mn.ByeAndAck()
-		}
+			if len(nilMembers) > 0 {
+				fmt.Printf("PktLayer.Start() after Get finds nil members: %v\n",
+					nilMembers)
+			}
+			// END --------------------------------------------
+			if err == nil {
+				// err = mn.ByeAndAck()
+			}
 
-		// END OF RUN ===============================================
-		if pl.Cnx != nil {
-			pl.Cnx.Close()
-		}
-		mn.DoneCh <- err
-	}()
+			// END OF RUN ===============================================
+			pl.DoneCh <- err
+		}()
+	} else {
+		pl.DoneCh <- err
+	}
 }

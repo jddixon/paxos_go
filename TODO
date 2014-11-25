@@ -1,13 +1,18 @@
 paxos_go/TODO
 
-2014-10-24
-    * minor change to v0.3.1 due to xlReg_go change not yet committed
+2014-11-20
+    * restructure to use Clusters rather than xlReg functions and 
+        structures, except in testing
 
-2014-10-14
+2014-11-12 (-10-14, edit in progress)
+    CONFUSED:
     * need changes to xlReg: serialization (String()) and 
         deserialization (ParseMemberNode()) functiona for MemberNode,
-        which is in xlReg_go/client_node.go
+        which is in xlReg_go/memberNode.go
     * then need de/serialization tests
+
+2014-10-24
+    * minor change to v0.3.1 due to xlReg_go change not yet committed   * DONE
 
 2014-10-14 (edited from 09-20)
     * Bootstrap.Run() morphs into HelloToPeers
