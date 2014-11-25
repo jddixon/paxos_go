@@ -25,7 +25,7 @@ var _ = fmt.Print
 // For practical use, it is essential that the PktLayer create its
 // Node when NewPktLayer() is first called, but then save its
 // configuration.  This is conventionally written to LFS/.xlattice/config.
-// On subsequent the client reads its configuration file rather than
+// On subsequent runs the client reads its configuration file rather than
 // regenerating keys, etc.
 
 type Bootstrapper struct {

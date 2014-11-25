@@ -1,5 +1,8 @@
 paxos_go/TODO
 
+2014-11-25
+    * bootstrap.go functionality moves into xlReg_go
+
 2014-11-20
     * restructure to use Clusters rather than xlReg functions and 
         structures, except in testing
