@@ -4,6 +4,6 @@ package paxos_go
 
 const (
 	// the version number tracked in CHANGES
-	VERSION      = "0.3.2"
-	VERSION_DATE = "2014-11-25"
+	VERSION      = "0.4.0"
+	VERSION_DATE = "2014-11-26"
 )

@@ -1,23 +1,31 @@
 paxos_go/TODO
 
+2014-11-26
+    * pktComms/ copied to xlCluster_go                                  * DONE
+    * later rm -rf from this package                                    * DONE
+
 2014-11-25
-    * bootstrap.go functionality moves into xlReg_go
+    * bootstrap.go functionality moves into xlReg_go                    * DONE
+
+---------------------------------------------------------------------
+NO LONGER RELEVANT: MOST REFER TO pktComms, NOW UNDER xlCluster_go
+---------------------------------------------------------------------
 
 2014-11-20
-    * restructure to use Clusters rather than xlReg functions and 
-        structures, except in testing
+    * restructure to use Clusters rather than xlReg functions and       * DONE
+        structures, except in testing                                   * DONE
 
-2014-11-12 (-10-14, edit in progress)
-    CONFUSED:
-    * need changes to xlReg: serialization (String()) and 
-        deserialization (ParseMemberNode()) functiona for MemberNode,
-        which is in xlReg_go/memberNode.go
-    * then need de/serialization tests
+2014-11-12 (-10-14, edit in progress)                                   * DROP
+    CONFUSED:                                                           * DROP
+    * need changes to xlReg: serialization (String()) and               * DROP
+        deserialization (ParseMemberNode()) functiona for MemberNode,   * DROP
+        which is in xlReg_go/memberNode.go                              * DROP
+    * then need de/serialization tests                                  * DROP
 
 2014-10-24
     * minor change to v0.3.1 due to xlReg_go change not yet committed   * DONE
 
-2014-10-14 (edited from 09-20)
+2014-10-14 (edited from 09-20)                      
     * Bootstrap.Run() morphs into HelloToPeers
 
 2014-10-13

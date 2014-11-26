@@ -1,5 +1,8 @@
 paxos_go/CHANGES
 
+v0.4.0
+    2014-11-26
+        * drop pktComs/                                             SLOC   16
 v0.3.2
     2014-11-25
         * more fixes to accommodate API changes                     SLOC 1254
