@@ -1,6 +1,6 @@
 package paxos_go
 
-// const.go
+// version.go
 
 const (
 	// the version number tracked in CHANGES
