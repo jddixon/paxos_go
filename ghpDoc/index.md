@@ -1,4 +1,4 @@
-# paxos_go
+<h1 class="libTop">paxos_go</h1>
 
 A library enabling the achievement of consensus within a cluster of 
 independent computational units with unique cryptographic 

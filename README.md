@@ -1,4 +1,5 @@
-# paxos_go
+paxos_go
+========
 
 A library enabling the achievement of consensus within a cluster of 
 independent computational units with unique cryptographic 
@@ -102,5 +103,5 @@ domain name of a zone file) to a hash.  The validity of the hash is
 confirmed by hashing the file.   
 
 ## On-line Documentation
-
-More information on the **paxos_go** project can be found [here](https://jddixon.github.io/paxos_go)
+More information on the **paxos_go** project can be found 
+[here](https://jddixon.github.io/paxos_go)
