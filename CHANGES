@@ -1,5 +1,8 @@
 paxos_go/CHANGES
 
+v0.4.2
+    2015-09-10
+        * correct typos, otherwise improve {README,index}.md        SLOC   16
 v0.4.1
     2015-06-16
         * update .gitignore                                         SLOC   16
