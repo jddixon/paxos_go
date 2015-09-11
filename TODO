@@ -1,5 +1,7 @@
 paxos_go/TODO
 
+2015-07-26
+    * need ssh access to github
 2014-11-26
     * pktComms/ copied to xlCluster_go                                  * DONE
     * later rm -rf from this package                                    * DONE
