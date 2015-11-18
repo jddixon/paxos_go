@@ -13,9 +13,9 @@
 
 <p>A library enabling the achievement of consensus within a cluster of
 independent computational units with unique cryptographic
-identities.  Intra-cluster communications pass over a full mesh of inter-node
-connections.  <strong>Commanders</strong> can query the cluster or propose new commands
-which
+identities.  Intra-cluster communications pass over a full mesh of
+intra-cluster connections.  <strong>Commanders</strong> can query the cluster or propose
+new commands which
 will pass through the consensus process and upon agreement will become part
 of the cluster&rsquo;s state.</p>
 
@@ -23,11 +23,15 @@ of the cluster&rsquo;s state.</p>
 
 <p>As the term is used here, a <strong>cluster</strong> is an
 <a href="https://jddixon.github.io/xlCluster">xLattice cluster</a>,
-group of coooperating processors,
-<strong>servers</strong>.  Paxos servers are driven by commands issued by <strong>commanders</strong>;
-the commanders are not themselves part of the cluster and generally do not
-communicate with one another.  Commanders issue <strong>commands</strong>.<br />
-Commands are not issued in
+a group of coooperating processors,
+<strong>servers</strong>.  Each member of the cluster listens on at least two TCP/IP
+connections: one is used for communications with other cluster members
+and the second is used for communicating with clients.</p>
+
+<p>Paxos servers are driven by commands issued by their clients, <strong>commanders</strong>.
+The commanders are not themselves part of the cluster and generally do not
+communicate directly with one another.  Commanders issue <strong>commands</strong>
+to the cluster.  Commands are not issued in
 any particular order and may take an arbitrary time to deliver.  While a
 command may never be corrupt, it may be lost or delivered more than once.</p>
 
@@ -54,25 +58,28 @@ execution of the command.</p>
 <p>A set of state machines as described above is referred to here as an
 <strong>application</strong>. An application runs on a single cluster.  Each server in
 the cluster has a state machine specific to the application.  Each such
-application uses a variant of the Paxos protocol to achieve consensus.<br />
+application uses a variant of the Paxos protocol to achieve consensus.
 Each application running on a cluster has a unique identifier, its <strong>appNdx</strong>.</p>
 
 <h2>pktComms</h2>
 
 <p>If there are <strong>N</strong> servers in a cluster, then at boot time each server
 opens a connection to each of its <strong>N-1</strong> peers.  The low-level code in
-pktComms/ manages these connections.  At boot, each server sends a <strong>Hello</strong>
+<code>pktComms/</code> manages these connections.  At boot, each server sends a <strong>Hello</strong>
 to each of its peers, using the protocol specified in <code>pktComms/p.proto</code>.
-The <code>Hello</code> message contains
-* a message number (<strong>MsgN</strong>), which is always 1;
-* the 32-byte nodeID of the sender;
-* the RSA public key used for digital signatures (<strong>SigPubKey</strong>);
-* the RSA public key used for encoding communications (<strong>CommsPubKey</strong>);
-* the address the server listens on (its ipV4 address and port number in string form);
-* optionally a <strong>Salt</strong>; and
-* the <strong>digital signature</strong> derived from the SHA3-256 hash of the fields present.</p>
+The <code>Hello</code> message contains</p>
 
-<p>If the peer accepts the Hello, it will reply with an <strong>Ack</strong>, as specified
+<ul>
+<li>a message number (<strong>MsgN</strong>), which is always 1;</li>
+<li>the 32-byte nodeID of the sender;</li>
+<li>the RSA public key used for digital signatures (<strong>SigPubKey</strong>);</li>
+<li>the RSA public key used for encoding communications (<strong>CommsPubKey</strong>);</li>
+<li>the address the server listens on (its ipV4 address and port number in string form);</li>
+<li>optionally a <strong>Salt</strong>; and</li>
+<li>the <strong>digital signature</strong> derived from the 256-bit SHA hash of the fields present.</li>
+</ul>
+
+<p>If the peer accepts the <code>Hello</code>, it will reply with an <strong>Ack</strong>, as specified
 in the protocol, and leave the connection open.  If there was an error in
 the <code>Hello</code> message, the peer with reply with an <strong>Error</strong> message, and close
 the connection.</p>
@@ -81,7 +88,7 @@ the connection.</p>
 this point the server periodically sends the peer a <strong>KeepAlive</strong> message,
 to which the peer will reply with either an <code>Ack</code> or an <code>Error</code> message.  In
 the normal case, the reply is an <code>Ack</code> and the connection remains open; if
-there was an error, the peer replies with an error message and the connection
+there was an error, the peer replies with an <code>Error</code> message and the connection
 is closed.</p>
 
 <p>At any appropriate point, instead of sending a <code>KeepAlive</code>, the server can
@@ -101,7 +108,7 @@ discarded and an error message returned.</p>
 <p>External clients to the application generally communicate with servers
 over a different set of listening ports.  External clients need not share
 the same model of the data as the consensus servers, except that an
-external client will always be able to obtain stateNdx, the 64-bit unsigned
+external client will always be able to obtain <code>stateNdx</code>, the 64-bit unsigned
 value identifying the current state of the state machine.</p>
 
 <p>As an example, consider a set of consensus servers which cooperate to appear
@@ -112,7 +119,7 @@ Each name server is responsible
 for a set of zone files and will answer standard DNS queries about each of
 its zones.</p>
 
-<p>The back-end cluster can store each such zone file by its content key.<br />
+<p>The back-end cluster can store each such zone file by its content key.
 To the cluster, the state machine maps zone names (the fully qualified
 domain name of a zone file) to a hash.  The validity of the hash is
 confirmed by hashing the file.</p>
@@ -142,7 +149,7 @@ Follow the SOFTWARE LICENSE link below for more information on project software 
        </a> project
     </div>
     <div class="logo" >
-      <a href="http://www.xlattice.org">
+      <a href="https://jddixon.github.io/xlattice/">
       <img src="img/xlattice-2014.jpg" alt="the XLattice Project" style="float: right;" >
       </a>
     </div>
