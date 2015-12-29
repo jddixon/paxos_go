@@ -11,7 +11,7 @@ of the cluster's state.
 ## Clusters
 
 As the term is used here, a **cluster** is an
-[xLattice cluster](https://jddixon.github.io/xlCluster),
+[xLattice cluster](https://jddixon.github.io/xlCluster_go),
 a group of coooperating processors,
 **servers**.  Each member of the cluster listens on at least two TCP/IP
 connections: one is used for communications with other cluster members
