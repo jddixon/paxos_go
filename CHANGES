@@ -1,5 +1,8 @@
 paxos_go/CHANGES
 
+v0.4.5
+    2016-02-25
+        * update LICENSE                                            SLOC   21
 v0.4.4
     2015-12-29
         * fix dead link
@@ -30,4 +33,5 @@ v0.2.0
 v0.1.0
     2014-08-31
         * skeletal version                                          SLOC   13
+
 
