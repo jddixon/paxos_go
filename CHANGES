@@ -1,5 +1,8 @@
 paxos_go/CHANGES
 
+v0.4.6
+    2016-05-31
+        * add bkp2U, other bash scripts; update .dvcz               SLOC  100
 v0.4.5
     2016-02-25
         * update LICENSE                                            SLOC   21
@@ -33,5 +36,6 @@ v0.2.0
 v0.1.0
     2014-08-31
         * skeletal version                                          SLOC   13
+
 
 
