@@ -1,0 +1,50 @@
+-----BEGIN RSA PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoM2sBgX0ChP2JriXkOxS
+e2FjHYVzBGkNvgf0vIAa7FFYZi2pWmxBAVXgl3tTiB3quqqud/MbKqdejM6gkKBK
+v8f7hlcBQLD6BLIZ/RRfhIElc+WlDVfKSnBTB4va5qTQAgvuq5i8+oMj7G8WEy5d
+7cYucWyUJMtHvT4pCDtBWeeqQ62tByWjv34Ud/+A9Mjf0leiWxM3tiToVsqIKb4s
+zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
+H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
+GQIDAQAB
+-----END RSA PUBLIC KEY-----
+paxos_go v0.4.7
+2016-06-27 02:44:29
+# START CONTENT #
+paxos_go
+ .copyright da5046f3d0695c0b841b17b172db883917846836
+ .dvcz
+  builds 4b5bea0ac010e3324800ee4e118fc601f5074fcc
+  lastBuildList e3111f1de33514adaec85731703354373e9b9091
+  projCfg ae4ad842dcc6843a6624ba63bcb358c4d2e1e59d
+  projCfg.local 210ecba07be8bfcf861ee92338eaef40328e7fde
+  version e74ad3b61ecad1cc5d35644ba715863e9ff62358
+ .gitignore ec0f9002629753cd248c6a672ef3de695c30f4b7
+ CHANGES abafc267d8242a79a08aa6c4ef91b6348039f4c2
+ LICENSE.md 42de349b4de7129392b3961ece4de861f00c0f6a
+ README.md a2f6a97ea276e36530e63798bd4727092ce92d72
+ TODO 3eb16c47b18a54be07497d05c27e16525929375e
+ bkp2U d3acad754687690a64cddbdb8fd3b594cb6b4c14
+ countem b5c75f480414a209c4105806efca6e1dd7616882
+ ghpDoc
+  css
+   LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
+   ghp.css 1d6ebe8a6cf8f61f4645a793cb087dfae2420f33
+   main.css 018ed80b8a6e6607bc7c08595fa5a7fa56853885
+   normalize.css cba40c7ce3d558d00ff79d7505ac3d348015ec9c
+  img
+   GitHub-Mark-32px.png fabe53eb72f9b6d3d47cd95aff31ffc45c2fdbf8
+   chunk.jpg de2b27e41f1547fc14b13399f5906b4303b49657
+   chunk2.jpg d0593d312dbb8ea837c17b28cb639726e29ea93b
+   cluster-with-clients.jpg c167d04c0c6b5736ef9fe4cdc3fcce1956fdea78
+   simple-cluster.jpg 6b223ddd25937c1ef75ef328f36fc3436f10bd62
+   xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
+   xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
+  index.md 62096e5b8f7d1d7ba55835dfd350054118b95a86
+ gocheck_test.go f29df55b763de1d1ac1c9741485f5bcca5e2c245
+ installit 1d555acb4946b6a678dcf064c8694b74192a5e94
+ styleit 20649b5d5e17a343672f41d2f5466e5441a85d49
+ test.all a6e25e4c12599edca89647bd4a2e759f084cdf12
+ version.go 988f45459111713da9d1ff8af264d1c8009acfe8
+# END CONTENT #
+
+EtyA8IMq0g4aaDc/5Pn5vm+uX5wN0C4Hm3vDbbKSMnsSRb3dgXnCUqnkToqdKP68Jp5CPUk/y7BMLHDSyvpbvnenXELk/Ka/iMGMKPLseh3GSaQVG44MNgKT6Fl7qOPpROPJK3QWMcsVWHDT5KdnPKBcO8u7mfOKOW9j/VHnO5X+LxcrKeUX92NzDMT5r4Qr5kUhhNDaj+dfm1eNxW48JNHdtM5itVwKYo8IjnpVCEDn0figDGGtmuxQQNGFQj7u3SiiAlC8EiBGM0hpFNJCWtY0iXdq952apT7QwUd1CzQ3SI9tPG21zeFj4/HXADgfwJkarm9a2BRVT0eeMoOHDg==
