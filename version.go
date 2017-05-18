@@ -1,6 +1,6 @@
 package paxos_go
 
 const (
-	VERSION      = "0.4.8"
-	VERSION_DATE = "2016-09-23"
+	VERSION      = "0.4.9"
+	VERSION_DATE = "2017-05-17"
 )
