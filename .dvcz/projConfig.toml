@@ -1,4 +1,4 @@
-projConfig.toml for paxos_go
+# projConfig.toml for paxos_go
 
 [meta]
     version = '0.1.0'
@@ -7,8 +7,8 @@ projConfig.toml for paxos_go
     name = 'paxos_go'  # distro name
     package = 'paxos_go'  # internal name
     main_lang = 'go'
-    version = '0.4.9'
-    version_date = '2017-05-17'
+    version = '0.4.10'
+    version_date = '2017-11-06'
     author = 'Jim Dixon'
     author_email = 'jddixon@gmail.com'
     copyright = '2014-2016'
