@@ -1,5 +1,11 @@
 paxos_go/CHANGES
 
+v0.4.10
+    2017-11-06
+        * fix directsory structure, config files                    SLOC  625
+v0.4.9
+    2017-05-17
+        * add projCOnfig.toml                                       SLOC  625
 v0.4.8
     2016-09-23
         * standardize licensing                                     SLOC  618
@@ -42,6 +48,8 @@ v0.2.0
 v0.1.0
     2014-08-31
         * skeletal version                                          SLOC   13
+
+
 
 
 
